@@ -4,7 +4,7 @@ Classificação de dígitos manuscritos com MNIST, comparação de modelos e ava
 
 ## Estado atual
 
-Ambiente inicial e Fase 1 implementados: carregamento do MNIST, diagnóstico das matrizes, distribuição das classes, grade dos dez dígitos e comparação entre imagem e vetor de pixels. Divisão estratificada (60% treino, 10% validação, 10% calibração e 20% teste) e normalização para [0, 1] implementadas. Treinamento e avaliação serão implementados nas próximas etapas.
+Ambiente inicial e Fase 1 implementados: carregamento do MNIST, diagnóstico das matrizes, distribuição das classes, grade dos dez dígitos e comparação entre imagem e vetor de pixels. Divisão estratificada (60% treino, 10% validação, 10% calibração e 20% teste) e normalização para [0, 1] implementadas. KNN avaliado em quatro configurações na validação: selecionado k=3 com pesos por distância (F1 ponderado 0,969526). Os demais modelos e a avaliação no teste serão implementados nas próximas etapas.
 
 ## Ambiente
 
