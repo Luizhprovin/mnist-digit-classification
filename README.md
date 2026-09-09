@@ -4,7 +4,7 @@ Classificação de dígitos manuscritos com MNIST, comparação de modelos e ava
 
 ## Estado atual
 
-Ambiente inicial e Fase 1 implementados: carregamento do MNIST, diagnóstico das matrizes, distribuição das classes, grade dos dez dígitos e comparação entre imagem e vetor de pixels. Divisão dos dados, treinamento e avaliação serão implementados nas próximas etapas.
+Ambiente inicial e Fase 1 implementados: carregamento do MNIST, diagnóstico das matrizes, distribuição das classes, grade dos dez dígitos e comparação entre imagem e vetor de pixels. Divisão estratificada (60% treino, 10% validação, 10% calibração e 20% teste) e normalização para [0, 1] implementadas. Treinamento e avaliação serão implementados nas próximas etapas.
 
 ## Ambiente
 
