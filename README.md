@@ -4,7 +4,7 @@ Classificação de dígitos manuscritos com MNIST, comparação de modelos e ava
 
 ## Estado atual
 
-Ambiente inicial e Fase 1 implementados: carregamento do MNIST, diagnóstico das matrizes, distribuição das classes, grade dos dez dígitos e comparação entre imagem e vetor de pixels. Divisão estratificada (60% treino, 10% validação, 10% calibração e 20% teste) e normalização para [0, 1] implementadas. KNN avaliado em quatro configurações na validação: selecionado k=3 com pesos por distância (F1 ponderado 0,969526). Random Forest também avaliada em quatro configurações: selecionadas 200 árvores sem limite explícito de profundidade (F1 ponderado 0,967215). As redes neurais e a avaliação no teste serão implementadas nas próximas etapas.
+Ambiente inicial e Fase 1 implementados: carregamento do MNIST, diagnóstico das matrizes, distribuição das classes, grade dos dez dígitos e comparação entre imagem e vetor de pixels. Divisão estratificada (60% treino, 10% validação, 10% calibração e 20% teste) e normalização para [0, 1] implementadas. KNN avaliado em quatro configurações na validação: selecionado k=3 com pesos por distância (F1 ponderado 0,969526). Random Forest também avaliada em quatro configurações: selecionadas 200 árvores sem limite explícito de profundidade (F1 ponderado 0,967215). MLP em Keras avaliada em quatro configurações: selecionadas camadas (256, 128) com L2=0,0001 (F1 ponderado 0,977409). Auditoria adicional confirmou ausência de imagens exatamente duplicadas. CNN e avaliação no teste serão implementadas nas próximas etapas.
 
 ## Ambiente
 
@@ -47,4 +47,4 @@ Análise exploratória, divisão estratificada, normalização, KNN, Random Fore
 - `data/cache/`: dados baixados, ignorados pelo Git.
 - `reports/figures/`: gráficos gerados pelo notebook.
 
-As dependências das redes neurais e dos diagramas serão acrescentadas nas respectivas etapas.
+TensorFlow 2.21.0 e Keras 3.15.1 estão incluídos nas dependências. A MLP selecionada é salva localmente em `artifacts/melhor_mlp.keras`; os modelos podem ser reproduzidos executando o notebook. As dependências dos diagramas serão acrescentadas na respectiva etapa.
