@@ -4,7 +4,7 @@ Classificação de dígitos manuscritos com MNIST, comparação de modelos e ava
 
 ## Estado atual
 
-Ambiente inicial e notebook de verificação preparados. As etapas de dados, treinamento e avaliação serão implementadas progressivamente.
+Ambiente inicial e Fase 1 implementados: carregamento do MNIST, diagnóstico das matrizes, distribuição das classes, grade dos dez dígitos e comparação entre imagem e vetor de pixels. Divisão dos dados, treinamento e avaliação serão implementados nas próximas etapas.
 
 ## Ambiente
 
@@ -26,6 +26,8 @@ python -m pip install -r requirements.txt
 
 Abra `projeto.ipynb` no VS Code e selecione o ambiente `.venv` como kernel. Execute as células na ordem.
 
+A primeira execução baixa o [MNIST do OpenML](https://www.openml.org/d/554), `mnist_784`, versão 1, e requer internet. O cache fica em `data/cache/` e é reutilizado nas execuções seguintes. A análise inicial considera as 70.000 imagens, sem treinamento de modelos.
+
 Para executar e atualizar as saídas pelo terminal:
 
 ```bash
@@ -42,5 +44,7 @@ Análise exploratória, divisão estratificada, normalização, KNN, Random Fore
 - `requirements.txt`: dependências do ambiente atual.
 - `.python-version`: versão de Python adotada.
 - `.vscode/`: configuração local do editor.
+- `data/cache/`: dados baixados, ignorados pelo Git.
+- `reports/figures/`: gráficos gerados pelo notebook.
 
 As dependências das redes neurais e dos diagramas serão acrescentadas nas respectivas etapas.
