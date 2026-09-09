@@ -1,4 +1,5 @@
 absl-py==2.5.0
+aggdraw==1.4.1
 appnope==1.0.0
 asttokens==3.0.2
 astunparse==1.6.3
@@ -88,6 +89,7 @@ tornado==6.5.8
 traitlets==5.16.1
 typing-extensions==4.16.0
 urllib3==2.7.0
+visualkeras==0.2.0
 wcwidth==0.8.3
 webencodings==0.6.1
 wheel==0.48.0

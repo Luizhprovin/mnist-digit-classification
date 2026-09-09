@@ -4,7 +4,16 @@ Classificação de dígitos manuscritos com MNIST, comparação de modelos e ava
 
 ## Estado atual
 
-Ambiente inicial e Fase 1 implementados: carregamento do MNIST, diagnóstico das matrizes, distribuição das classes, grade dos dez dígitos e comparação entre imagem e vetor de pixels. Divisão estratificada (60% treino, 10% validação, 10% calibração e 20% teste) e normalização para [0, 1] implementadas. KNN avaliado em quatro configurações na validação: selecionado k=3 com pesos por distância (F1 ponderado 0,969526). Random Forest também avaliada em quatro configurações: selecionadas 200 árvores sem limite explícito de profundidade (F1 ponderado 0,967215). MLP em Keras avaliada em quatro configurações: selecionadas camadas (256, 128) com L2=0,0001 (F1 ponderado 0,977409). Auditoria adicional confirmou ausência de imagens exatamente duplicadas. CNN e avaliação no teste serão implementadas nas próximas etapas.
+Análise exploratória, divisão estratificada (60% treino, 10% validação, 10% calibração e 20% teste), normalização e auditoria de duplicatas concluídas. KNN, Random Forest e MLP foram comparados em quatro configurações por família; a CNN utiliza uma arquitetura fixa. Os diagramas da MLP e da CNN e as curvas de treinamento estão no notebook.
+
+| Modelo selecionado | F1 ponderado na validação | Acurácia na validação |
+|---|---:|---:|
+| CNN | 0,982846 | 98,2857% |
+| MLP | 0,977409 | 97,7429% |
+| KNN | 0,969526 | 96,9571% |
+| Random Forest | 0,967215 | 96,7286% |
+
+A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias. A MLP será a referência entre os três modelos principais. Calibração, avaliação no teste e desafios serão implementados nas próximas etapas.
 
 ## Ambiente
 
@@ -47,4 +56,4 @@ Análise exploratória, divisão estratificada, normalização, KNN, Random Fore
 - `data/cache/`: dados baixados, ignorados pelo Git.
 - `reports/figures/`: gráficos gerados pelo notebook.
 
-TensorFlow 2.21.0 e Keras 3.15.1 estão incluídos nas dependências. A MLP selecionada é salva localmente em `artifacts/melhor_mlp.keras`; os modelos podem ser reproduzidos executando o notebook. As dependências dos diagramas serão acrescentadas na respectiva etapa.
+TensorFlow 2.21.0 e Keras 3.15.1 estão incluídos nas dependências. VisualKeras 0.2.0 gera os diagramas. MLP e CNN são salvas localmente em `artifacts/melhor_mlp.keras` e `artifacts/cnn.keras`; os modelos podem ser reproduzidos executando o notebook.
