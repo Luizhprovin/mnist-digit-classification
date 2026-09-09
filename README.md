@@ -13,7 +13,7 @@ Análise exploratória, divisão estratificada (60% treino, 10% validação, 10%
 | KNN | 0,969526 | 96,9571% |
 | Random Forest | 0,967215 | 96,7286% |
 
-A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias. A MLP será a referência entre os três modelos principais. Calibração, avaliação no teste e desafios serão implementados nas próximas etapas.
+A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias. A MLP será a referência entre os três modelos principais. A temperatura da CNN foi ajustada nas 7.000 imagens de calibração: T=1,009045, com alteração mínima da log loss nesse conjunto e preservação das classes previstas. Avaliação no teste e desafios serão implementados nas próximas etapas.
 
 ## Ambiente
 
@@ -33,7 +33,7 @@ python -m pip install -r requirements.txt
 
 ## Execução
 
-Abra `projeto.ipynb` no VS Code e selecione o ambiente `.venv` como kernel. Execute as células na ordem.
+Abra `projeto.ipynb` no VS Code e selecione o ambiente `.venv` como kernel. Reinicie o kernel e execute as células na ordem para aplicar a configuração inicial dos logs nativos do TensorFlow.
 
 A primeira execução baixa o [MNIST do OpenML](https://www.openml.org/d/554), `mnist_784`, versão 1, e requer internet. O cache fica em `data/cache/` e é reutilizado nas execuções seguintes. A análise inicial considera as 70.000 imagens, sem treinamento de modelos.
 
