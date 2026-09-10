@@ -13,7 +13,7 @@ Análise exploratória, divisão estratificada (60% treino, 10% validação, 10%
 | KNN | 0,969526 | 96,9571% |
 | Random Forest | 0,967215 | 96,7286% |
 
-A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias. A MLP será a referência entre os três modelos principais. A temperatura da CNN foi ajustada nas 7.000 imagens de calibração: T=1,009045, com alteração mínima da log loss nesse conjunto e preservação das classes previstas. Avaliação no teste concluída. Os desafios com classes ocultadas e imagens próprias serão implementados nas próximas etapas.
+A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias. A MLP será a referência entre os três modelos principais. A temperatura da CNN foi ajustada nas 7.000 imagens de calibração: T=1,009045, com alteração mínima da log loss nesse conjunto e preservação das classes previstas. Avaliação no teste concluída. O experimento com classes ocultadas foi concluído; o desafio com imagens próprias será implementado na próxima etapa.
 
 ## Resultados no teste
 
@@ -27,6 +27,10 @@ A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias
 A diferença de F1 entre CNN e MLP foi 0,007002, com intervalo de 95% [0,004786; 0,009285] pelo bootstrap pareado de 1.000 reamostragens. O intervalo é condicionado aos modelos ajustados e não incorpora a variabilidade de treinamento.
 
 A calibração não trouxe benefício nas medidas observadas no teste: a log loss passou de 0,05217654 para 0,05218850. As classes previstas foram preservadas. Matrizes de confusão, resultados por dígito, confiabilidade e interpretação estão no notebook; tabelas exportadas em `reports/tables/`.
+
+## Classes ausentes do treino
+
+Uma nova Random Forest foi ajustada sem os dígitos 4 e 7, com 33.531 imagens. Nas 2.824 imagens de teste dessas classes, a acurácia foi zero por construção. O modelo atribuiu a maioria dos exemplos à classe 9 e produziu 106 previsões erradas com confiança de pelo menos 90%. Isso demonstra que alta confiança entre classes conhecidas não garante reconhecer uma classe ausente do treino. A matriz e as probabilidades estão documentadas no notebook.
 
 ## Ambiente
 
