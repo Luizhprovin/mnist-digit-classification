@@ -47,14 +47,14 @@ O critério de seleção é o F1 ponderado na validação; os critérios de dese
 
 | Modelo | Acurácia | Precisão ponderada | Recall ponderado | F1 ponderado | Ajuste (s) | Inferência (s) |
 |---|---:|---:|---:|---:|---:|---:|
-| CNN | 98.3571% | 0.983612 | 0.983571 | 0.983553 | 19.714 | 0.317 |
-| MLP | 97.6571% | 0.976573 | 0.976571 | 0.976551 | 6.360 | 0.102 |
-| KNN | 97.0286% | 0.970562 | 0.970286 | 0.970257 | 0.005 | 2.677 |
-| Random Forest | 96.5714% | 0.965740 | 0.965714 | 0.965695 | 4.353 | 0.104 |
+| CNN | 98.3571% | 0.983612 | 0.983571 | 0.983553 | 19.638 | 0.328 |
+| MLP | 97.6571% | 0.976573 | 0.976571 | 0.976551 | 6.441 | 0.093 |
+| KNN | 97.0286% | 0.970562 | 0.970286 | 0.970257 | 0.006 | 2.700 |
+| Random Forest | 96.5714% | 0.965740 | 0.965714 | 0.965695 | 4.365 | 0.133 |
 
 A CNN acertou 13.770 imagens, 98 a mais que a MLP. A maior confusão da CNN foi **9 → 4**, com 16 exemplos. O dígito 9 apresentou o menor F1 em todos os modelos.
 
-O tempo de ajuste corresponde somente à configuração selecionada, e o de inferência ao lote de 14.000 imagens. São medidas de uma execução local, sem benchmark repetido; equipamento, paralelismo e custos das chamadas afetam os valores. A CNN apresentou maior tempo de ajuste e a MLP menor tempo de inferência nesta execução.
+O tempo de ajuste corresponde somente à configuração selecionada, e o de inferência ao lote de 14.000 imagens. São medidas de uma execução local, sem benchmark repetido; equipamento, paralelismo e custos das chamadas afetam os valores. A CNN apresentou maior tempo de ajuste e MLP apresentou menor tempo de inferência nesta execução.
 
 A diferença de F1 CNN − MLP foi **0,007002**, com intervalo percentil de 95% **[0,004786; 0,009285]**, obtido por 1.000 reamostragens pareadas. O intervalo é condicionado aos modelos ajustados e à hipótese de exemplos independentes; não inclui a variabilidade de novos treinamentos ou seleções.
 
@@ -88,6 +88,8 @@ A calibração feita no MNIST não garante probabilidades adequadas às fotograf
 
 As galerias apresentam cada imagem ao lado das dez probabilidades: [desenvolvimento](reports/figures/probabilidades_IMG_7057.png), [primeira foto de avaliação](reports/figures/probabilidades_IMG_7058.png) e [segunda foto de avaliação](reports/figures/probabilidades_IMG_7059.png).
 
+A [inspeção do processamento em cinco etapas](reports/figures/etapas_processamento.png) mostra o caminho do recorte original até a entrada efetivamente utilizada pela CNN. A função compartilhada está em `mnist_demo/preprocessamento.py`.
+
 ## Instalação
 
 Clone o repositório e entre na pasta:
@@ -119,6 +121,26 @@ python -m jupyter nbconvert --execute --to notebook --inplace projeto.ipynb --Ex
 
 A primeira execução baixa o [MNIST do OpenML](https://www.openml.org/d/554) e requer internet. O cache fica em `data/cache/` e é reutilizado nas execuções seguintes. O notebook treina os modelos e atualiza as tabelas, figuras e saídas. O tempo total varia com o equipamento. As sementes e versões auxiliam a reprodução, mas pequenas diferenças numéricas podem ocorrer entre plataformas.
 
+### Demonstração interativa local
+
+Para executar a demonstração web com desenho interativo em canvas, envio de fotografias e consulta às probabilidades calibradas da CNN:
+
+```bash
+python -m mnist_demo.servidor
+```
+
+Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook.
+
+### Testes automatizados e CI
+
+Para rodar a suíte de testes unitários localmente:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+O repositório conta com integração contínua (CI) configurada no GitHub Actions (`.github/workflows/ci.yml`), que valida a integridade sintática dos scripts, a estrutura do notebook e executa a suíte de testes a cada push e pull request.
+
 ## Organização
 
 ```text
@@ -127,6 +149,10 @@ README.md                    # Métodos, resultados e instruções
 requirements.txt             # Dependências com versões
 .python-version              # Python 3.12
 .vscode/                     # Seleção do ambiente no editor
+.github/workflows/           # Fluxos de automação e CI do GitHub Actions
+mnist_demo/                  # Módulos de pré-processamento, inferência desacoplada e servidor
+mnist_demo/web/              # Interface web (HTML5 Canvas, CSS e JavaScript puros)
+tests/                       # Suíte de testes automatizados (pipeline, manifesto, servidor)
 data/imagens_proprias/       # Fotos PNG, manifesto e parâmetros
 reports/figures/              # Matrizes, curvas, diagramas e galerias
 reports/tables/               # Resultados em CSV
@@ -155,12 +181,15 @@ As etapas foram registradas em commits próprios, com branches preservadas. As p
 | `codex/avaliacao-proprias` | Vinte imagens reservadas e probabilidades dos trinta dígitos |
 | `codex/documentacao` | Revisão, conclusão geral e documentação de entrega |
 | `codex/publicacao` | Nome público e referências do repositório |
+| `codex/etapas-processamento` | Visualização das etapas e processamento compartilhado |
+| `codex/demonstracao` | Interface web interativa e inferência desacoplada da CNN |
+| `codex/ci` | Testes automatizados e integração contínua no GitHub Actions |
 
 ## Limitações e melhorias possíveis
 
 Os resultados usam uma divisão e uma semente; a busca de hiperparâmetros é pequena. As fotos próprias representam uma pessoa e poucas condições de captura. A confiança não funciona como garantia de acerto nem como detector de classes desconhecidas.
 
-Melhorias futuras incluem avaliar outras pessoas, controlar a iluminação ao fotografar os mesmos dígitos, experimentar aumento de dados somente no desenvolvimento e avaliar rejeição de entradas desconhecidas. Novos ajustes exigiriam novos dados de desenvolvimento e uma nova amostra reservada. Uma interface para desenhar dígitos é uma extensão possível; a entrega atual é o notebook.
+Melhorias futuras incluem avaliar outras pessoas, controlar a iluminação ao fotografar os mesmos dígitos, experimentar aumento de dados somente no desenvolvimento e avaliar mecanismos explícitos de rejeição para entradas desconhecidas. Novos ajustes exigiriam novos dados de desenvolvimento e uma nova amostra reservada.
 
 ## Referências
 
