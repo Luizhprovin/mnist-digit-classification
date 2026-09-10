@@ -30,23 +30,41 @@ document.addEventListener("DOMContentLoaded", () => {
   let uploadBase64 = null;
   let desenhando = false;
   let canvasTemTraco = false;
+  let espessuraTraco = 24; // Padrão 24px (densidade compatível com MNIST)
 
   // 1. Inicialização do Canvas
   function resetarCanvas() {
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = "#111827";
-    ctx.lineWidth = 18;
+    ctx.lineWidth = espessuraTraco;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     canvasTemTraco = false;
   }
   resetarCanvas();
 
+  // Configuração dos botões de espessura do pincel
+  const btnBrushes = document.querySelectorAll(".btn-brush");
+  btnBrushes.forEach(btn => {
+    btn.addEventListener("click", () => {
+      btnBrushes.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      espessuraTraco = parseInt(btn.dataset.size, 10) || 24;
+      ctx.lineWidth = espessuraTraco;
+    });
+  });
+
   function iniciarTraco(e) {
     desenhando = true;
     canvasTemTraco = true;
     const { x, y } = obterPosicao(e);
+    // Garante que toques pontuais também criem um ponto sólido
+    ctx.beginPath();
+    ctx.arc(x, y, espessuraTraco / 2, 0, Math.PI * 2);
+    ctx.fillStyle = "#111827";
+    ctx.fill();
+
     ctx.beginPath();
     ctx.moveTo(x, y);
   }
