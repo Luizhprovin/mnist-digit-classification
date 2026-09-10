@@ -121,6 +121,26 @@ python -m jupyter nbconvert --execute --to notebook --inplace projeto.ipynb --Ex
 
 A primeira execução baixa o [MNIST do OpenML](https://www.openml.org/d/554) e requer internet. O cache fica em `data/cache/` e é reutilizado nas execuções seguintes. O notebook treina os modelos e atualiza as tabelas, figuras e saídas. O tempo total varia com o equipamento. As sementes e versões auxiliam a reprodução, mas pequenas diferenças numéricas podem ocorrer entre plataformas.
 
+### Demonstração interativa local
+
+Para executar a demonstração web com desenho interativo em canvas, envio de fotografias e consulta às probabilidades calibradas da CNN:
+
+```bash
+python -m mnist_demo.servidor
+```
+
+Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook.
+
+### Testes automatizados e CI
+
+Para rodar a suíte de testes unitários localmente:
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+O repositório conta com integração contínua (CI) configurada no GitHub Actions (`.github/workflows/ci.yml`), que valida a integridade sintática dos scripts, a estrutura do notebook e executa a suíte de testes a cada push e pull request.
+
 ## Organização
 
 ```text
@@ -129,6 +149,10 @@ README.md                    # Métodos, resultados e instruções
 requirements.txt             # Dependências com versões
 .python-version              # Python 3.12
 .vscode/                     # Seleção do ambiente no editor
+.github/workflows/           # Fluxos de automação e CI do GitHub Actions
+mnist_demo/                  # Módulos de pré-processamento, inferência desacoplada e servidor
+mnist_demo/web/              # Interface web (HTML5 Canvas, CSS e JavaScript puros)
+tests/                       # Suíte de testes automatizados (pipeline, manifesto, servidor)
 data/imagens_proprias/       # Fotos PNG, manifesto e parâmetros
 reports/figures/              # Matrizes, curvas, diagramas e galerias
 reports/tables/               # Resultados em CSV
@@ -158,12 +182,14 @@ As etapas foram registradas em commits próprios, com branches preservadas. As p
 | `codex/documentacao` | Revisão, conclusão geral e documentação de entrega |
 | `codex/publicacao` | Nome público e referências do repositório |
 | `codex/etapas-processamento` | Visualização das etapas e processamento compartilhado |
+| `codex/demonstracao` | Interface web interativa e inferência desacoplada da CNN |
+| `codex/ci` | Testes automatizados e integração contínua no GitHub Actions |
 
 ## Limitações e melhorias possíveis
 
 Os resultados usam uma divisão e uma semente; a busca de hiperparâmetros é pequena. As fotos próprias representam uma pessoa e poucas condições de captura. A confiança não funciona como garantia de acerto nem como detector de classes desconhecidas.
 
-Melhorias futuras incluem avaliar outras pessoas, controlar a iluminação ao fotografar os mesmos dígitos, experimentar aumento de dados somente no desenvolvimento e avaliar rejeição de entradas desconhecidas. Novos ajustes exigiriam novos dados de desenvolvimento e uma nova amostra reservada. Uma interface para desenhar dígitos é uma extensão possível; a entrega atual é o notebook.
+Melhorias futuras incluem avaliar outras pessoas, controlar a iluminação ao fotografar os mesmos dígitos, experimentar aumento de dados somente no desenvolvimento e avaliar mecanismos explícitos de rejeição para entradas desconhecidas. Novos ajustes exigiriam novos dados de desenvolvimento e uma nova amostra reservada.
 
 ## Referências
 

@@ -13,6 +13,8 @@
 | Conclusão técnica | Seções 6 a 9 | Modelo vencedor, confusões, custo, limites e melhorias |
 | Reprodutibilidade | README e requirements.txt | Instalação, execução, versões e dados próprios com caminhos relativos |
 | Extras planejados | Seções 4 a 6 | CNN, diagramas, calibração e bootstrap pareado |
+| Demonstração interativa | `mnist_demo/` | Interface web em HTML/JS com desenho, upload, exemplos e inferência desacoplada |
+| Automação e qualidade | `tests/` e `.github/` | Suíte de testes unitários e pipeline de integração contínua (CI) com GitHub Actions |
 
 ## Git e GitHub
 
