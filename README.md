@@ -167,24 +167,24 @@ As etapas foram registradas em commits próprios, com branches preservadas. As p
 
 | Branch | Objetivo |
 |---|---|
-| `codex/estrutura` | Ambiente e notebook inicial |
-| `codex/eda` | Carregamento e análise exploratória |
-| `codex/preprocessamento` | Divisão e normalização |
-| `codex/knn` | Ajuste e comparação do KNN |
-| `codex/random-forest` | Ajuste e comparação da Random Forest |
-| `codex/mlp` | MLP e auditoria de duplicatas |
-| `codex/cnn` | CNN e diagramas das redes |
-| `codex/calibracao` | Temperatura da CNN e correção de avisos |
-| `codex/avaliacao` | Teste, matrizes, confiabilidade e bootstrap |
-| `codex/classes-ocultadas` | Desafios A e B |
-| `codex/imagens-proprias` | Processamento e dez imagens de desenvolvimento |
-| `codex/avaliacao-proprias` | Vinte imagens reservadas e probabilidades dos trinta dígitos |
-| `codex/documentacao` | Revisão, conclusão geral e documentação de entrega |
-| `codex/publicacao` | Nome público e referências do repositório |
-| `codex/etapas-processamento` | Visualização das etapas e processamento compartilhado |
-| `codex/demonstracao` | Interface web interativa e inferência desacoplada da CNN |
-| `codex/ci` | Testes automatizados e integração contínua no GitHub Actions |
-| `codex/ajuste-traco` | Ajuste na espessura do traço e controle interativo de pincel |
+| `feature/estrutura` | Ambiente e notebook inicial |
+| `feature/eda` | Carregamento e análise exploratória |
+| `feature/preprocessamento` | Divisão e normalização |
+| `feature/knn` | Ajuste e comparação do KNN |
+| `feature/random-forest` | Ajuste e comparação da Random Forest |
+| `feature/mlp` | MLP e auditoria de duplicatas |
+| `feature/cnn` | CNN e diagramas das redes |
+| `feature/calibracao` | Temperatura da CNN e correção de avisos |
+| `feature/avaliacao` | Teste, matrizes, confiabilidade e bootstrap |
+| `feature/classes-ocultadas` | Desafios A e B |
+| `feature/imagens-proprias` | Processamento e dez imagens de desenvolvimento |
+| `feature/avaliacao-proprias` | Vinte imagens reservadas e probabilidades dos trinta dígitos |
+| `feature/documentacao` | Revisão, conclusão geral e documentação de entrega |
+| `feature/publicacao` | Nome público e referências do repositório |
+| `feature/etapas-processamento` | Visualização das etapas e processamento compartilhado |
+| `feature/demonstracao` | Interface web interativa e inferência desacoplada da CNN |
+| `feature/ci` | Testes automatizados e integração contínua no GitHub Actions |
+| `feature/ajuste-traco` | Ajuste na espessura do traço e controle interativo de pincel |
 
 ## Limitações e melhorias possíveis
 

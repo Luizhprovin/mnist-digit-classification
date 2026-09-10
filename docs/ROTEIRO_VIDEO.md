@@ -60,13 +60,13 @@ E para garantir qualidade de engenharia de software, eu segui à risca o padrão
 A branch `main` é a nossa versão estável de entrega. A branch `develop` concentrou todas as integrações de funcionalidades. E para cada fase do edital, eu criei uma *feature branch* separada a partir da `develop`. 
 
 Por exemplo:
-- `codex/eda` para a análise exploratória;
-- `codex/preprocessamento` para a divisão dos dados;
-- `codex/knn`, `codex/random-forest`, `codex/mlp` e `codex/cnn` para cada modelo;
-- `codex/calibracao` e `codex/avaliacao` para as métricas;
-- `codex/classes-ocultadas` para os testes de robustez;
-- `codex/imagens-proprias` e `codex/avaliacao-proprias` para as fotos reais;
-- E finalmente `codex/demonstracao`, `codex/ci` e `codex/ajuste-traco` para a interface web, os testes automatizados e o refinamento do traço.
+- `feature/eda` para a análise exploratória;
+- `feature/preprocessamento` para a divisão dos dados;
+- `feature/knn`, `feature/random-forest`, `feature/mlp` e `feature/cnn` para cada modelo;
+- `feature/calibracao` e `feature/avaliacao` para as métricas;
+- `feature/classes-ocultadas` para os testes de robustez;
+- `feature/imagens-proprias` e `feature/avaliacao-proprias` para as fotos reais;
+- E finalmente `feature/demonstracao`, `feature/ci` e `feature/ajuste-traco` para a interface web, os testes automatizados e o refinamento do traço.
 
 Nenhuma branch foi excluída após os merges, e todos os commits seguiram mensagens concisas no modo imperativo, como 'implementa X' ou 'adiciona Y'."
 

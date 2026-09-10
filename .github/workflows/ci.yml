@@ -2,7 +2,7 @@ name: Integração Contínua (CI)
 
 on:
   push:
-    branches: [ main, develop, "codex/*" ]
+    branches: [ main, develop, "feature/*" ]
   pull_request:
     branches: [ main, develop ]
 
