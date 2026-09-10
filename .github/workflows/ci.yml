@@ -1,0 +1,38 @@
+name: Integração Contínua (CI)
+
+on:
+  push:
+    branches: [ main, develop, "codex/*" ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  testes:
+    name: Verificações e Testes Automatizados
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar código do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências essenciais
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy scipy pillow tensorflow
+
+      - name: Checagem sintática dos módulos Python
+        run: |
+          python -m py_compile $(find mnist_demo tests -name "*.py")
+
+      - name: Validar integridade estrutural do notebook
+        run: |
+          python -c "import json; nb = json.load(open('projeto.ipynb')); print(f'Notebook válido com {len(nb[\"cells\"])} células')"
+
+      - name: Executar suíte de testes unitários
+        run: |
+          python -m unittest discover -s tests -v
