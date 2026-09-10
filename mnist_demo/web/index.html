@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classificador de Dígitos MNIST — CNN Calibrada</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="container header-content">
+      <div>
+        <h1>Classificador de Dígitos Manuscritos</h1>
+        <p class="subtitle">Demonstração interativa da CNN com calibração de probabilidades e visão computacional</p>
+      </div>
+      <div id="status-badge" class="badge badge-info">Verificando modelo...</div>
+    </div>
+  </header>
+
+  <main class="container main-layout">
+    <!-- Coluna de Entrada -->
+    <section class="card input-card">
+      <h2>Entrada de Imagem</h2>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="desenho">Desenhar</button>
+        <button class="tab-btn" data-tab="upload">Enviar Foto</button>
+        <button class="tab-btn" data-tab="exemplos">Exemplos do Estudo</button>
+      </div>
+
+      <!-- Aba 1: Desenho no Canvas -->
+      <div id="tab-desenho" class="tab-content active">
+        <p class="help-text">Desenhe um dígito (0 a 9) com o mouse ou toque no centro do quadro:</p>
+        <div class="canvas-container">
+          <canvas id="paint-canvas" width="280" height="280"></canvas>
+        </div>
+        <div class="canvas-actions">
+          <button id="btn-limpar" class="btn btn-secondary">Limpar</button>
+          <button id="btn-predizer-canvas" class="btn btn-primary">Classificar Dígito</button>
+        </div>
+      </div>
+
+      <!-- Aba 2: Upload de Imagem -->
+      <div id="tab-upload" class="tab-content">
+        <p class="help-text">Selecione uma fotografia ou recorte contendo um dígito:</p>
+        <div class="upload-dropzone" id="dropzone">
+          <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp">
+          <div class="dropzone-text">
+            <span>Clique para selecionar ou arraste uma foto aqui</span>
+            <small>(Formatos aceitos: PNG, JPG, WebP)</small>
+          </div>
+          <img id="upload-preview" alt="Prévia da foto" class="hidden">
+        </div>
+        <div class="form-group">
+          <label for="fundo-select">Tipo de fundo da foto:</label>
+          <select id="fundo-select" class="select-input">
+            <option value="claro" selected>Fundo claro (folha branca com traço escuro)</option>
+            <option value="escuro">Fundo escuro (traço claro)</option>
+          </select>
+        </div>
+        <div class="canvas-actions">
+          <button id="btn-predizer-upload" class="btn btn-primary" disabled>Classificar Foto</button>
+        </div>
+      </div>
+
+      <!-- Aba 3: Exemplos do Estudo -->
+      <div id="tab-exemplos" class="tab-content">
+        <p class="help-text">Carregue um dígito real utilizado nos testes do artigo:</p>
+        <div class="exemplos-grid">
+          <button class="btn btn-outline btn-exemplo" data-id="dev_0">
+            <strong>Dígito 0</strong>
+            <small>Foto IMG_7057 (Desenvolvimento)</small>
+          </button>
+          <button class="btn btn-outline btn-exemplo" data-id="dev_1">
+            <strong>Dígito 1</strong>
+            <small>Foto IMG_7057 (Desenvolvimento)</small>
+          </button>
+          <button class="btn btn-outline btn-exemplo" data-id="aval_7059_9">
+            <strong>Dígito 9</strong>
+            <small>Foto IMG_7059 (Teste Reservado)</small>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Coluna de Resultados -->
+    <section class="card results-card">
+      <h2>Resultado da Classificação</h2>
+      
+      <div id="mensagem-alerta" class="alert hidden"></div>
+
+      <div id="resultado-container" class="resultado-placeholder">
+        <p>Desenhe ou selecione uma imagem para visualizar o diagnóstico da rede.</p>
+      </div>
+
+      <div id="resultado-detalhes" class="hidden">
+        <div class="predicao-destaque">
+          <div class="digito-box">
+            <span class="digito-label">Predição</span>
+            <span id="valor-predito" class="digito-grande">-</span>
+          </div>
+          <div class="confianca-box">
+            <span class="confianca-label">Confiança Calibrada</span>
+            <span id="valor-confianca" class="confianca-valor">-%</span>
+            <small id="valor-temperatura">Temperatura T = 1.009</small>
+          </div>
+        </div>
+
+        <div class="probabilidades-section">
+          <h3>Distribuição de Probabilidades (0 a 9)</h3>
+          <div id="barras-probabilidades" class="barras-grid"></div>
+        </div>
+
+        <div class="etapas-section">
+          <h3>Etapas do Pré-processamento de Visão</h3>
+          <p class="help-text">Inspeção do pipeline compartilhado até a entrada 28 × 28 da CNN:</p>
+          <div class="etapas-grid">
+            <div class="etapa-item">
+              <img id="etapa-original" alt="Imagem original">
+              <span>1. Original</span>
+            </div>
+            <div class="etapa-item">
+              <img id="etapa-cinza" alt="Tons de cinza">
+              <span>2. Tons de Cinza</span>
+            </div>
+            <div class="etapa-item">
+              <img id="etapa-contraste" alt="Contraste local">
+              <span>3. Contraste</span>
+            </div>
+            <div class="etapa-item">
+              <img id="etapa-traco" alt="Traço isolado">
+              <span>4. Traço</span>
+            </div>
+            <div class="etapa-item">
+              <img id="etapa-entrada" alt="Entrada 28x28">
+              <span>5. Entrada (28×28)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer container">
+    <p>Mini-Projeto Avaliativo — Módulo 2 | Modelo: CNN Keras com Calibração por Escalonamento de Temperatura</p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
