@@ -93,8 +93,8 @@ As galerias apresentam cada imagem ao lado das dez probabilidades: [desenvolvime
 Clone o repositório e entre na pasta:
 
 ```bash
-git clone https://github.com/Luizhprovin/miniprojeto_mod02.git
-cd miniprojeto_mod02
+git clone https://github.com/Luizhprovin/mnist-digit-classification.git
+cd mnist-digit-classification
 ```
 
 Em macOS ou Linux, com Python 3.12 instalado:
@@ -137,7 +137,7 @@ docs/ENTREGA.md               # Correspondência com os requisitos e pendências
 
 ## Versionamento
 
-As etapas foram registradas em commits próprios, com branches preservadas. As primeiras integrações foram locais por avanço direto de `develop` (fast-forward); o fechamento local usa commits de merge. A publicação no GitHub e o pull request de `develop` para `main` estão pendentes. O histórico não atribui pull requests às etapas integradas apenas localmente.
+As etapas foram registradas em commits próprios, com branches preservadas. As primeiras integrações foram locais por avanço direto de `develop` (fast-forward); o fechamento local usa commits de merge. O repositório público mantém as branches de cada etapa. A versão de entrega é integrada de `develop` para `main` por pull request. O histórico não atribui pull requests às etapas integradas apenas localmente.
 
 | Branch | Objetivo |
 |---|---|
@@ -154,6 +154,7 @@ As etapas foram registradas em commits próprios, com branches preservadas. As p
 | `codex/imagens-proprias` | Processamento e dez imagens de desenvolvimento |
 | `codex/avaliacao-proprias` | Vinte imagens reservadas e probabilidades dos trinta dígitos |
 | `codex/documentacao` | Revisão, conclusão geral e documentação de entrega |
+| `codex/publicacao` | Nome público e referências do repositório |
 
 ## Limitações e melhorias possíveis
 
