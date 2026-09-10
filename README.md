@@ -47,14 +47,14 @@ O critério de seleção é o F1 ponderado na validação; os critérios de dese
 
 | Modelo | Acurácia | Precisão ponderada | Recall ponderado | F1 ponderado | Ajuste (s) | Inferência (s) |
 |---|---:|---:|---:|---:|---:|---:|
-| CNN | 98.3571% | 0.983612 | 0.983571 | 0.983553 | 19.714 | 0.317 |
-| MLP | 97.6571% | 0.976573 | 0.976571 | 0.976551 | 6.360 | 0.102 |
-| KNN | 97.0286% | 0.970562 | 0.970286 | 0.970257 | 0.005 | 2.677 |
-| Random Forest | 96.5714% | 0.965740 | 0.965714 | 0.965695 | 4.353 | 0.104 |
+| CNN | 98.3571% | 0.983612 | 0.983571 | 0.983553 | 19.638 | 0.328 |
+| MLP | 97.6571% | 0.976573 | 0.976571 | 0.976551 | 6.441 | 0.093 |
+| KNN | 97.0286% | 0.970562 | 0.970286 | 0.970257 | 0.006 | 2.700 |
+| Random Forest | 96.5714% | 0.965740 | 0.965714 | 0.965695 | 4.365 | 0.133 |
 
 A CNN acertou 13.770 imagens, 98 a mais que a MLP. A maior confusão da CNN foi **9 → 4**, com 16 exemplos. O dígito 9 apresentou o menor F1 em todos os modelos.
 
-O tempo de ajuste corresponde somente à configuração selecionada, e o de inferência ao lote de 14.000 imagens. São medidas de uma execução local, sem benchmark repetido; equipamento, paralelismo e custos das chamadas afetam os valores. A CNN apresentou maior tempo de ajuste e a MLP menor tempo de inferência nesta execução.
+O tempo de ajuste corresponde somente à configuração selecionada, e o de inferência ao lote de 14.000 imagens. São medidas de uma execução local, sem benchmark repetido; equipamento, paralelismo e custos das chamadas afetam os valores. A CNN apresentou maior tempo de ajuste e MLP apresentou menor tempo de inferência nesta execução.
 
 A diferença de F1 CNN − MLP foi **0,007002**, com intervalo percentil de 95% **[0,004786; 0,009285]**, obtido por 1.000 reamostragens pareadas. O intervalo é condicionado aos modelos ajustados e à hipótese de exemplos independentes; não inclui a variabilidade de novos treinamentos ou seleções.
 
@@ -87,6 +87,8 @@ As vinte imagens reservadas foram avaliadas com o processamento fixado, sem novo
 A calibração feita no MNIST não garante probabilidades adequadas às fotografias próprias. A luminosidade pode alterar contraste e representação dos traços, mas o experimento não isolou esse fator; não é possível atribuir o erro observado à iluminação.
 
 As galerias apresentam cada imagem ao lado das dez probabilidades: [desenvolvimento](reports/figures/probabilidades_IMG_7057.png), [primeira foto de avaliação](reports/figures/probabilidades_IMG_7058.png) e [segunda foto de avaliação](reports/figures/probabilidades_IMG_7059.png).
+
+A [inspeção do processamento em cinco etapas](reports/figures/etapas_processamento.png) mostra o caminho do recorte original até a entrada efetivamente utilizada pela CNN. A função compartilhada está em `mnist_demo/preprocessamento.py`.
 
 ## Instalação
 
@@ -155,6 +157,7 @@ As etapas foram registradas em commits próprios, com branches preservadas. As p
 | `codex/avaliacao-proprias` | Vinte imagens reservadas e probabilidades dos trinta dígitos |
 | `codex/documentacao` | Revisão, conclusão geral e documentação de entrega |
 | `codex/publicacao` | Nome público e referências do repositório |
+| `codex/etapas-processamento` | Visualização das etapas e processamento compartilhado |
 
 ## Limitações e melhorias possíveis
 
