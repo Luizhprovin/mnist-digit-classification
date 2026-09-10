@@ -13,7 +13,7 @@ Análise exploratória, divisão estratificada (60% treino, 10% validação, 10%
 | KNN | 0,969526 | 96,9571% |
 | Random Forest | 0,967215 | 96,7286% |
 
-A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias. A MLP será a referência entre os três modelos principais. A temperatura da CNN foi ajustada nas 7.000 imagens de calibração: T=1,009045, com alteração mínima da log loss nesse conjunto e preservação das classes previstas. Avaliação no teste concluída. O experimento com classes ocultadas foi concluído; o processamento de imagens próprias foi desenvolvido e a avaliação das vinte imagens reservadas será realizada na próxima etapa.
+A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias. A MLP foi a referência entre os três modelos principais no bootstrap pareado. A temperatura da CNN foi ajustada nas 7.000 imagens de calibração: T=1,009045, com alteração mínima da log loss nesse conjunto e preservação das classes previstas. A avaliação no teste, o experimento com classes ocultadas e a avaliação das imagens próprias foram concluídos.
 
 ## Resultados no teste
 
@@ -32,11 +32,21 @@ A calibração não trouxe benefício nas medidas observadas no teste: a log los
 
 Uma nova Random Forest foi ajustada sem os dígitos 4 e 7, com 33.531 imagens. Nas 2.824 imagens de teste dessas classes, a acurácia foi zero por construção. O modelo atribuiu a maioria dos exemplos à classe 9 e produziu 106 previsões erradas com confiança de pelo menos 90%. Isso demonstra que alta confiança entre classes conhecidas não garante reconhecer uma classe ausente do treino. A matriz e as probabilidades estão documentadas no notebook.
 
-## Imagens próprias — desenvolvimento
+## Imagens próprias
 
-A primeira fotografia fornece dez recortes para desenvolver o processamento: correção de iluminação, extração e expansão do traço, redimensionamento proporcional e centralização em 28 × 28. A CNN acertou 9/10 nesses exemplos; o dígito 1 foi previsto como 3. São resultados de desenvolvimento, não a avaliação final das imagens próprias.
+A primeira fotografia fornece dez recortes para desenvolver o processamento: correção de iluminação, extração e expansão do traço, redimensionamento proporcional e centralização em 28 × 28. A CNN acertou 9/10 nesses exemplos; o dígito 1 foi previsto como 3. Esses resultados pertencem ao desenvolvimento do processamento.
 
-A cópia orientada da foto, as coordenadas dos recortes, os rótulos e os parâmetros do processamento estão em `data/imagens_proprias/`. As vinte imagens das outras duas fotografias permanecem reservadas para avaliação com os parâmetros fixados.
+As vinte imagens das outras duas fotografias foram avaliadas com os parâmetros fixados, sem novos ajustes nos pesos da CNN ou na temperatura:
+
+| Fotografia reservada | Acertos | Acurácia |
+|---|---:|---:|
+| IMG_7058.heic | 10/10 | 100% |
+| IMG_7059.heic | 9/10 | 90% |
+| Total reservado | 19/20 | 95% |
+
+O único erro na avaliação foi um 9 previsto como 3, com confiança de 98,53%. A calibração feita no MNIST não garante probabilidades adequadas às fotografias próprias. O resultado de 95% descreve apenas esses vinte exemplos de uma mesma pessoa e duas fotografias; não representa uma estimativa precisa para outros estilos de escrita ou condições de captura.
+
+As três galerias do notebook apresentam todos os trinta dígitos com suas dez probabilidades. Os resultados numéricos estão em `reports/tables/imagens_proprias_avaliacao.csv` e `reports/tables/probabilidades_imagens_proprias.csv`. As cópias orientadas das fotos, as coordenadas dos recortes, os rótulos e os parâmetros fixados estão em `data/imagens_proprias/`.
 
 ## Ambiente
 
@@ -66,7 +76,7 @@ Para executar e atualizar as saídas pelo terminal:
 python -m jupyter nbconvert --execute --to notebook --inplace projeto.ipynb
 ```
 
-## Escopo previsto
+## Escopo implementado
 
 Análise exploratória, divisão estratificada, normalização, KNN, Random Forest, MLP em Keras, CNN, comparação multiclasse, bootstrap pareado, calibração e diagramas das redes. Os desafios incluem treinamento sem duas classes e inferência sobre 30 dígitos manuscritos próprios.
 

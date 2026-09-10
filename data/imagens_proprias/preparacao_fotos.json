@@ -12,5 +12,33 @@
     ],
     "formato": "PNG RGB sem EXIF",
     "observacao": "Cópia de trabalho orientada e reduzida; original preservado fora do repositório."
+  },
+  "IMG_7058.png": {
+    "fonte_original": "IMG_7058.heic",
+    "rotacao_antihoraria_graus": 90,
+    "dimensoes_antes_rotacao": [
+      4536,
+      8064
+    ],
+    "dimensoes_copia": [
+      3200,
+      1800
+    ],
+    "formato": "PNG RGB sem EXIF",
+    "observacao": "Cópia de trabalho orientada e reduzida; original preservado fora do repositório."
+  },
+  "IMG_7059.png": {
+    "fonte_original": "IMG_7059.heic",
+    "rotacao_antihoraria_graus": 90,
+    "dimensoes_antes_rotacao": [
+      4536,
+      8064
+    ],
+    "dimensoes_copia": [
+      3200,
+      1800
+    ],
+    "formato": "PNG RGB sem EXIF",
+    "observacao": "Cópia de trabalho orientada e reduzida; original preservado fora do repositório."
   }
 }
