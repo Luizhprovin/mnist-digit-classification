@@ -1,0 +1,13 @@
+Modelo,Verdadeiro,Previsto,Quantidade
+KNN,4,9,35
+KNN,8,5,25
+KNN,2,7,22
+Random Forest,4,9,36
+Random Forest,3,2,20
+Random Forest,8,9,19
+MLP,4,9,21
+MLP,3,5,13
+MLP,5,3,13
+CNN,9,4,16
+CNN,5,6,12
+CNN,5,3,11
