@@ -16,9 +16,9 @@
 
 ## Git e GitHub
 
-As branches de cada etapa são preservadas. As primeiras integrações ocorreram localmente por fast-forward; o fechamento local usa commits de merge. A criação do repositório público e o pull request de `develop` para `main` estão pendentes. A versão consolidada deve estar em `main` antes da entrega.
+As branches de cada etapa são preservadas. As primeiras integrações ocorreram localmente por fast-forward; o fechamento local usa commits de merge. O repositório público mantém as branches de cada etapa. A versão de entrega é integrada de `develop` para `main` por pull request. A versão consolidada deve estar em `main` antes da entrega.
 
-Destino planejado: [Luizhprovin/miniprojeto_mod02](https://github.com/Luizhprovin/miniprojeto_mod02).
+Repositório público: [Luizhprovin/mnist-digit-classification](https://github.com/Luizhprovin/mnist-digit-classification).
 
 ## Vídeo e submissão — pendentes
 
