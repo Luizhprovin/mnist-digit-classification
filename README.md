@@ -129,7 +129,7 @@ Para executar a demonstração web com desenho interativo em canvas, envio de fo
 python -m mnist_demo.servidor
 ```
 
-Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook.
+Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook. A tela de desenho inclui opções de espessura de traço (18px, 24px e 30px), com padrão em 24px para manter a densidade do traço proporcional ao MNIST original ao ser reduzido para 28 × 28.
 
 ### Testes automatizados e CI
 
@@ -184,12 +184,15 @@ As etapas foram registradas em commits próprios, com branches preservadas. As p
 | `codex/etapas-processamento` | Visualização das etapas e processamento compartilhado |
 | `codex/demonstracao` | Interface web interativa e inferência desacoplada da CNN |
 | `codex/ci` | Testes automatizados e integração contínua no GitHub Actions |
+| `codex/ajuste-traco` | Ajuste na espessura do traço e controle interativo de pincel |
 
 ## Limitações e melhorias possíveis
 
 Os resultados usam uma divisão e uma semente; a busca de hiperparâmetros é pequena. As fotos próprias representam uma pessoa e poucas condições de captura. A confiança não funciona como garantia de acerto nem como detector de classes desconhecidas.
 
-Melhorias futuras incluem avaliar outras pessoas, controlar a iluminação ao fotografar os mesmos dígitos, experimentar aumento de dados somente no desenvolvimento e avaliar mecanismos explícitos de rejeição para entradas desconhecidas. Novos ajustes exigiriam novos dados de desenvolvimento e uma nova amostra reservada.
+Na demonstração interativa por desenho no canvas, nota-se uma mudança de domínio (*domain shift*) em relação ao papel físico: o mouse e trackpad produzem traçados com menor fricção, cantos mais agudos e micro-descontinuidades. Esse efeito é especialmente visível no **dígito 8**, cuja morfologia compartilha arcos com o 2 e o 3; se as voltas do 8 não forem perfeitamente fechadas ou se o traço for demasiadamente fino, os filtros convolucionais tendem a ativar os detectores de 2 ou 3 com menor confiança. A disponibilização de espessuras maiores de traço (24px a 30px) atenua esse problema ao garantir densidade adequada na redução para 28 × 28.
+
+Melhorias futuras incluem avaliar outras pessoas, controlar a iluminação ao fotografar os mesmos dígitos, experimentar aumento de dados (*data augmentation* com transformações elásticas e pequenas rotações) para aproximar o treino da caligrafia em telas digitais, adicionar operadores morfológicos de fechamento (*closing*) para conectar laços imperfeitos e avaliar mecanismos explícitos de rejeição para entradas desconhecidas. Novos ajustes exigiriam novos dados de desenvolvimento e uma nova amostra reservada.
 
 ## Referências
 
