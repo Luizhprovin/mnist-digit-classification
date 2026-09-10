@@ -13,7 +13,7 @@ Análise exploratória, divisão estratificada (60% treino, 10% validação, 10%
 | KNN | 0,969526 | 96,9571% |
 | Random Forest | 0,967215 | 96,7286% |
 
-A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias. A MLP será a referência entre os três modelos principais. A temperatura da CNN foi ajustada nas 7.000 imagens de calibração: T=1,009045, com alteração mínima da log loss nesse conjunto e preservação das classes previstas. Avaliação no teste concluída. O experimento com classes ocultadas foi concluído; o desafio com imagens próprias será implementado na próxima etapa.
+A CNN foi escolhida pelo F1 de validação para calibração e imagens próprias. A MLP será a referência entre os três modelos principais. A temperatura da CNN foi ajustada nas 7.000 imagens de calibração: T=1,009045, com alteração mínima da log loss nesse conjunto e preservação das classes previstas. Avaliação no teste concluída. O experimento com classes ocultadas foi concluído; o processamento de imagens próprias foi desenvolvido e a avaliação das vinte imagens reservadas será realizada na próxima etapa.
 
 ## Resultados no teste
 
@@ -31,6 +31,12 @@ A calibração não trouxe benefício nas medidas observadas no teste: a log los
 ## Classes ausentes do treino
 
 Uma nova Random Forest foi ajustada sem os dígitos 4 e 7, com 33.531 imagens. Nas 2.824 imagens de teste dessas classes, a acurácia foi zero por construção. O modelo atribuiu a maioria dos exemplos à classe 9 e produziu 106 previsões erradas com confiança de pelo menos 90%. Isso demonstra que alta confiança entre classes conhecidas não garante reconhecer uma classe ausente do treino. A matriz e as probabilidades estão documentadas no notebook.
+
+## Imagens próprias — desenvolvimento
+
+A primeira fotografia fornece dez recortes para desenvolver o processamento: correção de iluminação, extração e expansão do traço, redimensionamento proporcional e centralização em 28 × 28. A CNN acertou 9/10 nesses exemplos; o dígito 1 foi previsto como 3. São resultados de desenvolvimento, não a avaliação final das imagens próprias.
+
+A cópia orientada da foto, as coordenadas dos recortes, os rótulos e os parâmetros do processamento estão em `data/imagens_proprias/`. As vinte imagens das outras duas fotografias permanecem reservadas para avaliação com os parâmetros fixados.
 
 ## Ambiente
 
@@ -72,5 +78,7 @@ Análise exploratória, divisão estratificada, normalização, KNN, Random Fore
 - `.vscode/`: configuração local do editor.
 - `data/cache/`: dados baixados, ignorados pelo Git.
 - `reports/figures/`: gráficos gerados pelo notebook.
+- `reports/tables/`: resultados exportados em CSV.
+- `data/imagens_proprias/`: fotografias de trabalho, manifesto de recortes e parâmetros do processamento.
 
 TensorFlow 2.21.0 e Keras 3.15.1 estão incluídos nas dependências. VisualKeras 0.2.0 gera os diagramas. MLP e CNN são salvas localmente em `artifacts/melhor_mlp.keras` e `artifacts/cnn.keras`; os modelos podem ser reproduzidos executando o notebook.
