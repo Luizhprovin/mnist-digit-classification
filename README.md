@@ -137,7 +137,7 @@ docs/ENTREGA.md               # Correspondência com os requisitos e pendências
 
 ## Versionamento
 
-As etapas foram registradas em commits próprios, com branches preservadas. As primeiras integrações foram locais por avanço direto de `develop` (fast-forward). As integrações finais usam pull requests no GitHub; o histórico não atribui pull requests às etapas que foram integradas apenas localmente. `main` recebe a versão consolidada de `develop`.
+As etapas foram registradas em commits próprios, com branches preservadas. As primeiras integrações foram locais por avanço direto de `develop` (fast-forward); o fechamento local usa commits de merge. A publicação no GitHub e o pull request de `develop` para `main` estão pendentes. O histórico não atribui pull requests às etapas integradas apenas localmente.
 
 | Branch | Objetivo |
 |---|---|

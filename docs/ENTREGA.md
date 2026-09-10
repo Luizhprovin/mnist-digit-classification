@@ -16,9 +16,9 @@
 
 ## Git e GitHub
 
-As branches de cada etapa são preservadas. As primeiras integrações ocorreram localmente por fast-forward; as integrações finais são registradas por pull requests. A versão consolidada deve estar em `main` antes da entrega.
+As branches de cada etapa são preservadas. As primeiras integrações ocorreram localmente por fast-forward; o fechamento local usa commits de merge. A criação do repositório público e o pull request de `develop` para `main` estão pendentes. A versão consolidada deve estar em `main` antes da entrega.
 
-Repositório: [Luizhprovin/miniprojeto_mod02](https://github.com/Luizhprovin/miniprojeto_mod02).
+Destino planejado: [Luizhprovin/miniprojeto_mod02](https://github.com/Luizhprovin/miniprojeto_mod02).
 
 ## Vídeo e submissão — pendentes
 
