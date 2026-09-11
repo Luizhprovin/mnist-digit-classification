@@ -68,7 +68,7 @@ A temperatura foi ajustada nas 7.000 imagens de calibração: **T = 1,009045**. 
 
 Uma nova Random Forest com 200 árvores e profundidade máxima 20 foi ajustada sem os dígitos 4 e 7, usando 33.531 imagens. Nas 2.824 imagens de teste dessas classes, a acurácia foi zero por construção: o classificador só emite as oito classes aprendidas.
 
-A maioria dos exemplos foi atribuída à classe 9. Houve **106 previsões incorretas com confiança de pelo menos 90%**. Alta confiança entre classes conhecidas não garante reconhecer uma classe ausente. O notebook explica essa limitação e a diferença entre classificação e um mecanismo de rejeição, que não foi implementado neste experimento.
+A maioria dos exemplos foi atribuída à classe 9. A confiança média ficou abaixo de 60%, mas houve **106 previsões incorretas com confiança de pelo menos 90%** — 3,75% das 2.824 imagens, a cauda de **falsa certeza** (*overconfidence*) discutida na seção 7 do notebook. Alta confiança entre classes conhecidas não garante reconhecer uma classe ausente. O notebook explica essa limitação e a diferença entre classificação e um mecanismo de rejeição, que não foi implementado neste experimento.
 
 ### Imagens próprias — desafio C
 
