@@ -68,7 +68,7 @@ A temperatura foi ajustada nas 7.000 imagens de calibração: **T = 1,009045**. 
 
 Uma nova Random Forest com 200 árvores e profundidade máxima 20 foi ajustada sem os dígitos 4 e 7, usando 33.531 imagens. Nas 2.824 imagens de teste dessas classes, a acurácia foi zero por construção: o classificador só emite as oito classes aprendidas.
 
-A maioria dos exemplos foi atribuída à classe 9. Houve **106 previsões incorretas com confiança de pelo menos 90%**. Alta confiança entre classes conhecidas não garante reconhecer uma classe ausente. O notebook explica essa limitação e a diferença entre classificação e um mecanismo de rejeição, que não foi implementado neste experimento.
+A maioria dos exemplos foi atribuída à classe 9. A confiança média ficou abaixo de 60%, mas houve **106 previsões incorretas com confiança de pelo menos 90%** — 3,75% das 2.824 imagens, a cauda de **falsa certeza** (*overconfidence*) discutida na seção 7 do notebook. Alta confiança entre classes conhecidas não garante reconhecer uma classe ausente. O notebook explica essa limitação e a diferença entre classificação e um mecanismo de rejeição, que não foi implementado neste experimento.
 
 ### Imagens próprias — desafio C
 
@@ -122,6 +122,8 @@ python -m jupyter nbconvert --execute --to notebook --inplace projeto.ipynb --Ex
 A primeira execução baixa o [MNIST do OpenML](https://www.openml.org/d/554) e requer internet. O cache fica em `data/cache/` e é reutilizado nas execuções seguintes. O notebook treina os modelos e atualiza as tabelas, figuras e saídas. O tempo total varia com o equipamento. As sementes e versões auxiliam a reprodução, mas pequenas diferenças numéricas podem ocorrer entre plataformas.
 
 ### Demonstração interativa local
+
+**Pré-requisito:** a demonstração carrega `artifacts/cnn.keras` e `artifacts/calibracao_cnn.json`, gerados pelo notebook e não versionados (`artifacts/` está no `.gitignore`). Em um clone novo, execute [projeto.ipynb](projeto.ipynb) por completo antes de iniciar o servidor. Sem esses arquivos a interface abre, sinaliza o modelo como indisponível e recusa as predições com a mensagem correspondente.
 
 Para executar a demonstração web com desenho interativo em canvas, envio de fotografias e consulta às probabilidades calibradas da CNN:
 
