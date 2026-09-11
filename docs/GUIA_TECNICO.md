@@ -13,7 +13,7 @@ Este documento detalha o raciocínio científico, a fundamentação teórica e a
 
 ### Por que isso é feito?
 - **Reprodutibilidade científica:** Redes neurais inicializam pesos com distribuições aleatórias e treinam com mini-lotes sorteados via estocástica. Sem sementes fixadas, cada execução geraria acurácias ligeiramente diferentes.
-- **Auditoria de avaliadores:** Garante que qualquer cientista de dados ou avaliador que execute o notebook obtenha os mesmos 98,36% de acurácia na CNN.
+- **Auditoria de avaliadores:** Garante que qualquer cientista de dados ou avaliador que execute o notebook obtenha os mesmos 98,99% de acurácia na CNN.
 
 ---
 
@@ -64,7 +64,7 @@ O edital exige a comparação de 3 modelos distintos com ao menos 2 hiperparâme
   1. `n_neighbors`: $k \in \{3, 5\}$.
   2. `weights`: `'uniform'` (voto simples da maioria) vs `'distance'` (ponderação pelo inverso da distância euclidiana).
 - **Por que os pesos por distância venceram?** No reconhecimento de escrita, vizinhos mais próximos no espaço vetorial possuem traços muito mais verossímeis; ponderar pela proximidade impede que vizinhos marginais na borda da hiperesfera distorçam o voto.
-- **Resultado:** $k=3$, pesos por distância alcançou $97,03\%$ de acurácia no teste. Custo de inferência: 2,7 segundos (lento para 14k imagens, pois o KNN precisa calcular a distância para todos os 42k pontos de treino a cada predição).
+- **Resultado:** $k=3$, pesos por distância alcançou $97,03\%$ de acurácia no teste. Custo de inferência: 2,2 segundos (lento para 14k imagens, pois o KNN precisa calcular a distância para todos os 42k pontos de treino a cada predição).
 
 ### 4.2. Random Forest
 - **Hiperparâmetros ajustados:**
@@ -93,7 +93,7 @@ O edital exige a comparação de 3 modelos distintos com ao menos 2 hiperparâme
   5. `Flatten()` + `Dense(64, activation='relu')`: Vetorização dos mapas convolucionais e combinação semântica.
   6. `Dropout(0.3)`: Zera aleatoriamente 30% das conexões durante o treino para forçar neurônios a aprenderem representações redundantes e robustas.
   7. `Dense(10, activation='softmax')`: Produz a distribuição de probabilidades das 10 classes.
-- **Resultado:** Campeã absoluta com **98,36% de acurácia no teste**.
+- **Resultado:** Campeã absoluta com **98,99% de acurácia no teste**.
 
 ---
 
@@ -112,13 +112,13 @@ O notebook calcula a tabela comparativa exigida:
 ### 5.2. Análise de Confusões Frequentes (Heatmap $10 \times 10$)
 - O par de dígitos com **maior taxa de confusão na CNN foi o par 9 e 4** (com 16 ocorrências onde o 9 foi previsto como 4).
 - **Justificativa técnica:** O 9 e o 4 compartilham a mesma haste vertical direita e um laço superior quadrado/arredondado. Se o topo do 4 fechar levemente ou se o laço do 9 for reto, os filtros convolucionais ativam padrões similares.
-- O dígito **9** foi a classe mais desafiadora em todos os 4 modelos, apresentando o menor F1-score da base.
+- O dígito **9** foi a classe mais desafiadora no KNN, na Random Forest e na MLP, apresentando o menor F1-score nos três. Na CNN, o menor F1 ficou com o dígito **4** (0,9861), com o 9 logo atrás (0,9864); a diferença entre os dois é pequena.
 
 ### 5.3. Bootstrap Pareado: CNN vs MLP
 - Para responder com rigor se a CNN é verdadeiramente superior à MLP ou se foi apenas sorte na partição de teste:
 - O código executa **1.000 reamostragens com reposição (*bootstrap*)** dos 14.000 exemplos de teste.
 - Calcula a diferença $\Delta \text{F1} = \text{F1}_{\text{CNN}} - \text{F1}_{\text{MLP}}$ em cada iteração.
-- **Resultado:** A diferença média foi de $+0,0070$, com intervalo de confiança de 95% estritamente positivo: $[0,0048; 0,0093]$. Como o zero não está contido no intervalo, comprova-se a superioridade estatisticamente significante da CNN com $p < 0,001$.
+- **Resultado:** A diferença média foi de $+0,0134$, com intervalo percentil de 95% estritamente positivo: $[0,0113; 0,0156]$. Como o zero não está contido no intervalo, a vantagem da CNN sobre a MLP se sustenta diante da variação amostral deste teste, condicionada aos modelos já ajustados. O intervalo não cobre a variabilidade de novos treinamentos e não é um teste de hipótese.
 
 ---
 
@@ -158,13 +158,13 @@ A função em [`mnist_demo/preprocessamento.py`](file:///Users/luizhenriqueprovi
 5. **Redimensionamento Proporcional e Centralização por Centro de Massa:** Redimensiona o dígito para $20 \times 20$ pixels sem distorcer o aspecto original, encaixa em um quadro preto de $28 \times 28$ e aplica a função `scipy.ndimage.shift` para alinhar perfeitamente o centro de massa nos pixels $(13.5, 13.5)$, exatamente como Yann LeCun fez no MNIST em 1998.
 
 ### 7.3. Resultados nas Fotos Próprias
-- Nas 20 fotos reservadas, a CNN calibrada acertou **19 de 20 dígitos (95% de acurácia)**!
+- Nas 20 fotos reservadas, a CNN calibrada acertou **20 de 20 dígitos (100% de acurácia)**!
 - O único erro foi um dígito 9 previsto como 3 com alta confiança, demonstrando na prática como iluminação e estilo caligráfico interferem no mundo real.
 
 ---
 
 ## 8. Demonstração Web e Desacoplamento da Inferência
 
-- O módulo [`mnist_demo/inferencia.py`](file:///Users/luizhenriqueprovin/Documents/ChatGPT/New%20project/miniprojeto_mod02/mnist_demo/inferencia.py) cria a classe `PreditorCNN`. Ela extrai as camadas convolucionais de `artifacts/cnn.keras` e computa os *logits* escalonados pela temperatura ($T = 1,009$), dispensando carregar o notebook ou o scikit-learn.
+- O módulo [`mnist_demo/inferencia.py`](file:///Users/luizhenriqueprovin/Documents/ChatGPT/New%20project/miniprojeto_mod02/mnist_demo/inferencia.py) cria a classe `PreditorCNN`. Ela extrai as camadas convolucionais de `artifacts/cnn.keras` e computa os *logits* escalonados pela temperatura ($T = 1,512$), dispensando carregar o notebook ou o scikit-learn.
 - O servidor em [`mnist_demo/servidor.py`](file:///Users/luizhenriqueprovin/Documents/ChatGPT/New%20project/miniprojeto_mod02/mnist_demo/servidor.py) usa `http.server` nativo e serve a interface em [`mnist_demo/web/`](file:///Users/luizhenriqueprovin/Documents/ChatGPT/New%20project/miniprojeto_mod02/mnist_demo/web/), permitindo desenho interativo em canvas, upload de fotografias e exibição das 10 probabilidades e das 5 etapas do pré-processamento.
 - Foi implementado o seletor de espessura de pincel (18px, 24px, 30px), resolvendo o problema de *Domain Shift* e garantindo que desenhos com mouse não fiquem excessivamente finos ao serem reduzidos para $28 \times 28$.

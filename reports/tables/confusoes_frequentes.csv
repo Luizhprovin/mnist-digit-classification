@@ -8,6 +8,6 @@ Random Forest,8,9,19
 MLP,4,9,21
 MLP,3,5,13
 MLP,5,3,13
-CNN,9,4,16
-CNN,5,6,12
-CNN,5,3,11
+CNN,4,9,11
+CNN,6,4,7
+CNN,1,2,6

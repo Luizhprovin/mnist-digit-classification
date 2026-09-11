@@ -88,12 +88,12 @@ Outro ponto que eu tive muito cuidado foi no protocolo de dados: eu não dividi 
 `[Pausa e aponta para a tabela comparativa]`
 
 Na Fase 3 e 4, comparamos os modelos variando ao menos dois hiperparâmetros em cada um:
-1. No **KNN**, testamos 3 e 5 vizinhos, com pesos uniformes e ponderados por distância. O KNN com 3 vizinhos e peso por distância venceu com 97,03% de acurácia. O problema dele foi o custo computacional na inferência: demorou 2,7 segundos para avaliar o teste, porque ele precisa calcular a distância para todos os 42 mil pontos de treino a cada previsão.
+1. No **KNN**, testamos 3 e 5 vizinhos, com pesos uniformes e ponderados por distância. O KNN com 3 vizinhos e peso por distância venceu com 97,03% de acurácia. O problema dele foi o custo computacional na inferência: demorou 2,2 segundos para avaliar o teste, porque ele precisa calcular a distância para todos os 42 mil pontos de treino a cada previsão.
 2. Na **Random Forest**, variamos entre 100 e 200 árvores, com e sem limite de profundidade. A floresta com 200 árvores sem limite foi a melhor, atingindo 96,57%.
 3. Na **MLP**, exploramos arquiteturas de duas camadas ocultas e regularização L2. A configuração de 256 e 128 neurônios com L2 de 0.0001 alcançou 97,66%.
 4. E por fim, implementamos uma **CNN** convolucional com duas camadas Conv2D, Max Pooling e Dropout de 30%. 
 
-A CNN foi a grande campeã, atingindo **98,36% de acurácia global** e F1 ponderado de 0,9835. E para comprovar se ela era realmente superior à MLP e não apenas sorte da partição, nós rodamos um **bootstrap pareado com 1.000 reamostragens**, que confirmou com 95% de confiança uma vantagem estatisticamente significante da CNN em relação à MLP.
+A CNN foi a grande campeã, atingindo **98,99% de acurácia global** e F1 ponderado de 0,9899. E para comprovar se ela era realmente superior à MLP e não apenas sorte da partição, nós rodamos um **bootstrap pareado com 1.000 reamostragens**, que confirmou com 95% de confiança uma vantagem estatisticamente significante da CNN em relação à MLP.
 
 A matriz de confusão mostrou que o par mais difícil para a rede foi o **9 e o 4**, com 16 confusões, justamente por compartilharem a mesma haste reta vertical e o laço superior."
 
@@ -111,7 +111,7 @@ Nos Desafios A e B, nós treinamos um modelo ocultando completamente os dígitos
 
 `[Pausa]`
 
-No Desafio C, eu escrevi dígitos em papel branco e tirei fotos reais com celular. Criamos um pipeline de visão computacional que converte para cinza, calcula o contraste relativo contra o fundo da folha para eliminar sombras, isola o traço e centraliza pelo centro de massa em 28 por 28. Nas 20 fotos reservadas de teste cego, a CNN acertou **19 de 20 imagens, ou seja, 95% de acerto**.
+No Desafio C, eu escrevi dígitos em papel branco e tirei fotos reais com celular. Criamos um pipeline de visão computacional que converte para cinza, calcula o contraste relativo contra o fundo da folha para eliminar sombras, isola o traço e centraliza pelo centro de massa em 28 por 28. Nas 20 fotos reservadas de teste cego, a CNN acertou **as 20 de 20 imagens, ou seja, 100% de acerto**.
 
 `[Muda a tela para a demonstração web: http://127.0.0.1:8765]`
 
