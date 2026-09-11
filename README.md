@@ -123,6 +123,8 @@ A primeira execução baixa o [MNIST do OpenML](https://www.openml.org/d/554) e 
 
 ### Demonstração interativa local
 
+**Pré-requisito:** a demonstração carrega `artifacts/cnn.keras` e `artifacts/calibracao_cnn.json`, gerados pelo notebook e não versionados (`artifacts/` está no `.gitignore`). Em um clone novo, execute [projeto.ipynb](projeto.ipynb) por completo antes de iniciar o servidor. Sem esses arquivos a interface abre, sinaliza o modelo como indisponível e recusa as predições com a mensagem correspondente.
+
 Para executar a demonstração web com desenho interativo em canvas, envio de fotografias e consulta às probabilidades calibradas da CNN:
 
 ```bash
