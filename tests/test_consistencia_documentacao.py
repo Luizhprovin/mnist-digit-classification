@@ -9,6 +9,7 @@ contínua, sem precisar dos artefatos ignorados pelo Git.
 
 import csv
 import json
+import re
 import unittest
 from pathlib import Path
 
@@ -125,7 +126,7 @@ class TestConsistenciaDocumentacao(unittest.TestCase):
             for modelo in modelos
         }
         if len(set(piores.values())) > 1:
-            for texto, onde in [(self.readme, "README"), (self.docs, "Os documentos em docs/")]:
+            for texto, onde in [(self.readme, "README"), (self.notebook, "O notebook"), (self.docs, "Os documentos em docs/")]:
                 self.assertNotIn(
                     "menor F1 em todos os modelos", texto,
                     f"{onde} afirma um pior dígito comum, mas os modelos discordam: {piores}.",
@@ -134,6 +135,23 @@ class TestConsistenciaDocumentacao(unittest.TestCase):
                     "mais desafiadora em todos os 4 modelos", texto,
                     f"{onde} afirma um pior dígito comum, mas os modelos discordam: {piores}.",
                 )
+
+    def test_confusoes_na_conclusao_do_notebook(self):
+        paragrafo = self.notebook.split("**Conclusão dos erros por dígito.**", 1)[1].split("\n", 1)[0]
+        esperadas = [r for r in linhas("confusoes_frequentes.csv") if r["Modelo"] == "CNN"]
+        citadas = re.findall(r"(\d) → (\d)(?:, com (\d+) imagens| \((\d+)\))", paragrafo)
+        observadas = [(a, b, c or d) for a, b, c, d in citadas[:3]]
+        self.assertEqual(observadas, [(r["Verdadeiro"], r["Previsto"], r["Quantidade"]) for r in esperadas])
+
+    def test_erro_atual_na_conclusao_da_inspecao(self):
+        paragrafo = self.notebook.split("**Conclusão da inspeção.**", 1)[1].split("## 9.", 1)[0]
+        erros = [r for r in linhas("imagens_proprias_desenvolvimento.csv") if r["Acerto"] == "False"]
+        for r in erros:
+            self.assertIn(f"dígito {r['Verdadeiro']} de desenvolvimento previsto como {r['Previsto']}", paragrafo)
+            self.assertIn(decimal(float(r["Confiança calibrada"]) * 100, 2) + "%", paragrafo)
+        reservadas = linhas("imagens_proprias_avaliacao.csv")
+        if all(r["Acerto"] == "True" for r in reservadas):
+            self.assertNotIn("O erro no 9 continua", paragrafo)
 
 
 if __name__ == "__main__":

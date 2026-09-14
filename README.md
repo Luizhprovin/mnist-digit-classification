@@ -39,9 +39,11 @@ A divisão é estratificada, com semente 42, e própria deste projeto; não corr
 | MLP | Camadas (128, 64) ou (256, 128); L2 de 0,0001 ou 0,001 | (256, 128), L2 de 0,0001 |
 | CNN | Uma arquitetura fixa, adicional às três famílias principais | Conv32 → Pool → Conv64 → Pool → Dense64 → saída de 10 classes |
 
-São quatro combinações por família principal, doze no total. A CNN é uma comparação adicional sem busca equivalente de hiperparâmetros. As redes usam Adam, taxa de aprendizado 0,001, lotes de 64 e até 30 épocas, com parada antecipada pela acurácia de validação, paciência de cinco épocas e restauração dos melhores pesos. A regra é a mesma nas duas redes, para que a comparação entre elas não dependa de orçamentos de treino diferentes; acompanhamos a acurácia porque a perda de validação oscila neste problema e interrompia o ajuste antes da convergência.
+São quatro combinações por família principal, doze no total. A CNN é uma comparação adicional sem busca equivalente de hiperparâmetros. As redes usam Adam, taxa de aprendizado 0,001, lotes de 64 e até 30 épocas, com parada antecipada pela acurácia de validação, paciência de cinco épocas e restauração dos melhores pesos. A regra é a mesma nas duas redes, para padronizar o limite de épocas e a regra de parada, embora épocas efetivas e custo continuem diferentes; acompanhamos a acurácia porque a perda de validação oscila neste problema e interrompia o ajuste antes da convergência.
 
-O critério de seleção é o F1 ponderado na validação; os critérios de desempate estão documentados no notebook. A CNN foi escolhida antes do teste para calibração e imagens próprias. A MLP foi a referência entre as três famílias principais no bootstrap pareado.
+O critério de seleção é o F1 ponderado na validação; os critérios de desempate estão documentados no notebook. Em cada execução, a escolha da CNN para calibração e imagens próprias utiliza a validação. A MLP foi a referência entre as três famílias principais no bootstrap pareado.
+
+**Histórico da avaliação:** a regra de parada das redes foi revisada após uma primeira execução, e os resultados foram recalculados nas mesmas partições e fotografias. Treinamento e calibração não recebem o teste, mas seus resultados anteriores já eram conhecidos. Não apresentamos esse histórico como uma única avaliação cega; futuras decisões de ajuste exigem uma nova amostra reservada.
 
 ## Resultados no teste
 
@@ -54,7 +56,7 @@ O critério de seleção é o F1 ponderado na validação; os critérios de dese
 
 A CNN acertou 13.859 imagens, 187 a mais que a MLP. A maior confusão da CNN foi **4 → 9**, com 11 exemplos. O dígito 9 apresentou o menor F1 no KNN, na Random Forest e na MLP; na CNN o menor F1 ficou com o dígito 4 (0,9861), seguido de perto pelo 9 (0,9864).
 
-O tempo de ajuste corresponde somente à configuração selecionada, e o de inferência ao lote de 14.000 imagens. São medidas de uma execução local, sem benchmark repetido; equipamento, paralelismo e custos das chamadas afetam os valores. A CNN apresentou maior tempo de ajuste e MLP apresentou menor tempo de inferência nesta execução.
+O tempo de ajuste corresponde somente à configuração selecionada, e o de inferência ao lote de 14.000 imagens. São medidas de uma execução local, sem benchmark repetido; equipamento, paralelismo e custos das chamadas afetam os valores. A CNN apresentou maior tempo de ajuste. A Random Forest teve a menor duração de inferência nesta execução (0,0874 s), muito próxima da MLP (0,0897 s); a diferença isolada não estabelece vantagem consistente.
 
 A diferença de F1 CNN − MLP foi **0,013382**, com intervalo percentil de 95% **[0,011304; 0,015602]**, obtido por 1.000 reamostragens pareadas. O intervalo é condicionado aos modelos ajustados e à hipótese de exemplos independentes; não inclui a variabilidade de novos treinamentos ou seleções.
 
@@ -131,7 +133,7 @@ Para executar a demonstração web com desenho interativo em canvas, envio de fo
 python -m mnist_demo.servidor
 ```
 
-Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook. A tela de desenho inclui opções de espessura de traço (18px, 24px e 30px), com padrão em 24px para manter a densidade do traço proporcional ao MNIST original ao ser reduzido para 28 × 28.
+Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook. A tela de desenho inclui opções de espessura de traço (18px, 24px e 30px), com padrão em 24px. A espessura facilita experimentar desenhos, mas não garante equivalência com a escrita do MNIST.
 
 ### Testes automatizados e CI
 
@@ -141,7 +143,7 @@ Para rodar a suíte de testes unitários localmente:
 python -m unittest discover -s tests -v
 ```
 
-O repositório conta com integração contínua (CI) configurada no GitHub Actions (`.github/workflows/ci.yml`), que valida a integridade sintática dos scripts, a estrutura do notebook e executa a suíte de testes a cada push e pull request. Entre eles está `tests/test_consistencia_documentacao.py`, que confere os números citados no README, nas conclusões do notebook e em `docs/` contra as tabelas de `reports/tables/`: se uma reexecução alterar um resultado sem que os textos sejam atualizados, o CI acusa a divergência.
+O GitHub Actions verifica a sintaxe Python, valida o formato do notebook e executa os testes em pushes e pull requests. Os testes de consistência comparam afirmações selecionadas do README, notebook e guia com os CSVs; não substituem revisão de todos os textos. O CI não retreina os modelos e pula a inferência completa quando `artifacts/` está ausente. A inferência com a CNN deve ser verificada também no ambiente local com os artefatos gerados.
 
 ## Organização
 
@@ -196,7 +198,7 @@ As etapas foram registradas em commits próprios, com branches preservadas. As p
 
 Os resultados usam uma divisão e uma semente; a busca de hiperparâmetros é pequena. As fotos próprias representam uma pessoa e poucas condições de captura. A confiança não funciona como garantia de acerto nem como detector de classes desconhecidas.
 
-Na demonstração interativa por desenho no canvas, nota-se uma mudança de domínio (*domain shift*) em relação ao papel físico: o mouse e trackpad produzem traçados com menor fricção, cantos mais agudos e micro-descontinuidades. Esse efeito é especialmente visível no **dígito 8**, cuja morfologia compartilha arcos com o 2 e o 3; se as voltas do 8 não forem perfeitamente fechadas ou se o traço for demasiadamente fino, os filtros convolucionais tendem a ativar os detectores de 2 ou 3 com menor confiança. A disponibilização de espessuras maiores de traço (24px a 30px) atenua esse problema ao garantir densidade adequada na redução para 28 × 28.
+Desenhos com mouse ou trackpad podem diferir das fotografias e do MNIST em espessura, continuidade e formato dos traços. Foram observadas confusões no uso exploratório do canvas, incluindo desenhos do dígito 8. Não houve experimento controlado nem inspeção das ativações que identificasse sua causa. O seletor de pincel oferece outra forma de desenhar, mas seu ganho de acurácia não foi medido.
 
 Melhorias futuras incluem avaliar outras pessoas, controlar a iluminação ao fotografar os mesmos dígitos, experimentar aumento de dados (*data augmentation* com transformações elásticas e pequenas rotações) para aproximar o treino da caligrafia em telas digitais, adicionar operadores morfológicos de fechamento (*closing*) para conectar laços imperfeitos e avaliar mecanismos explícitos de rejeição para entradas desconhecidas. Novos ajustes exigiriam novos dados de desenvolvimento e uma nova amostra reservada.
 
