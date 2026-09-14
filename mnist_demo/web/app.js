@@ -344,15 +344,17 @@ document.addEventListener("DOMContentLoaded", () => {
     alertaBox.classList.add("hidden");
   }
 
-  // A checagem inicial não deve sobrescrever uma consulta iniciada pelo usuário.
+  // Interações locais não bloqueiam o status inicial; consultas ativas têm prioridade.
   fetch("/api/estado")
     .then(r => {
       if (!r.ok) throw new Error("Falha ao consultar o servidor.");
       return r.json();
     })
     .then(dados => {
+      // Uma predição concluída já confirmou que o modelo está disponível.
+      if (estadoModelo === "pronto") return;
       estadoModelo = dados.modelo_disponivel ? "pronto" : "ausente";
-      if (versaoEntrada !== 0) return;
+      if (consultaAtiva) return;
       exibirEstadoModelo();
       if (estadoModelo === "ausente") {
         exibirAlerta("CNN ou calibração não encontradas. Execute o notebook para gerar os artefatos.");
@@ -361,6 +363,6 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch(() => {
       if (estadoModelo === "pronto") return;
       estadoModelo = "offline";
-      if (versaoEntrada === 0) exibirEstadoModelo();
+      if (!consultaAtiva) exibirEstadoModelo();
     });
 });

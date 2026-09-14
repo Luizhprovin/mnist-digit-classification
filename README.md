@@ -143,7 +143,13 @@ Para rodar a suíte de testes unitários localmente:
 python -m unittest discover -s tests -v
 ```
 
-O GitHub Actions verifica a sintaxe Python, valida o formato do notebook e executa os testes em pushes e pull requests. Os testes de consistência comparam afirmações selecionadas do README, notebook e documentação com os CSVs; não substituem revisão de todos os textos. O CI não retreina os modelos e pula a inferência completa quando `artifacts/` está ausente. A inferência com a CNN deve ser verificada também no ambiente local com os artefatos gerados.
+Os testes de respostas assíncronas da interface usam o executor nativo do Node.js 24, sem pacotes adicionais:
+
+```bash
+node --test tests/web/*.test.cjs
+```
+
+Node.js é necessário apenas para esses testes, não para executar a demonstração. O GitHub Actions verifica a sintaxe Python, valida o formato do notebook e executa as suítes Python e JavaScript nos eventos configurados de push e pull request. Os testes de consistência comparam afirmações selecionadas do README, notebook e documentação com os CSVs; não substituem revisão de todos os textos. O CI não retreina os modelos e pula a inferência completa quando `artifacts/` está ausente. A inferência com a CNN deve ser verificada também no ambiente local com os artefatos gerados.
 
 ## Organização
 
