@@ -2,7 +2,7 @@
 
 Mini-projeto avaliativo do Módulo 02 de Desenvolvimento de IA para Análise Preditiva. O projeto compara algoritmos clássicos e redes neurais para reconhecer dígitos de 0 a 9, examina erros e confiança das previsões e aplica o modelo selecionado a fotografias de dígitos próprios.
 
-A implementação, as saídas executadas e as interpretações estão em [projeto.ipynb](projeto.ipynb). A CNN atingiu **98,3571% de acurácia nas 14.000 imagens de teste** e acertou **19 das 20 imagens próprias reservadas**. O resultado nas fotos é exploratório e não estima o desempenho para outras pessoas ou condições de captura.
+A implementação, as saídas executadas e as interpretações estão em [projeto.ipynb](projeto.ipynb). A CNN atingiu **98,9929% de acurácia nas 14.000 imagens de teste** e acertou **as 20 imagens próprias reservadas**. O resultado nas fotos é exploratório e não estima o desempenho para outras pessoas ou condições de captura.
 
 ![Arquitetura da CNN utilizada](reports/figures/arquitetura_cnn.png)
 
@@ -39,30 +39,32 @@ A divisão é estratificada, com semente 42, e própria deste projeto; não corr
 | MLP | Camadas (128, 64) ou (256, 128); L2 de 0,0001 ou 0,001 | (256, 128), L2 de 0,0001 |
 | CNN | Uma arquitetura fixa, adicional às três famílias principais | Conv32 → Pool → Conv64 → Pool → Dense64 → saída de 10 classes |
 
-São quatro combinações por família principal, doze no total. A CNN é uma comparação adicional sem busca equivalente de hiperparâmetros. As redes usam Adam, taxa de aprendizado 0,001, lotes de 64 e até 30 épocas, com parada antecipada pela perda de validação e restauração dos melhores pesos.
+São quatro combinações por família principal, doze no total. A CNN é uma comparação adicional sem busca equivalente de hiperparâmetros. As redes usam Adam, taxa de aprendizado 0,001, lotes de 64 e até 30 épocas, com parada antecipada pela acurácia de validação, paciência de cinco épocas e restauração dos melhores pesos. A regra é a mesma nas duas redes, para padronizar o limite de épocas e a regra de parada, embora épocas efetivas e custo continuem diferentes; acompanhamos a acurácia porque a perda de validação oscila neste problema e interrompia o ajuste antes da convergência.
 
-O critério de seleção é o F1 ponderado na validação; os critérios de desempate estão documentados no notebook. A CNN foi escolhida antes do teste para calibração e imagens próprias. A MLP foi a referência entre as três famílias principais no bootstrap pareado.
+O critério de seleção é o F1 ponderado na validação; os critérios de desempate estão documentados no notebook. Em cada execução, a escolha da CNN para calibração e imagens próprias utiliza a validação. A MLP foi a referência entre as três famílias principais no bootstrap pareado.
+
+**Histórico da avaliação:** a regra de parada das redes foi revisada após uma primeira execução, e os resultados foram recalculados nas mesmas partições e fotografias. Treinamento e calibração não recebem o teste, mas seus resultados anteriores já eram conhecidos. Não apresentamos esse histórico como uma única avaliação cega; futuras decisões de ajuste exigem uma nova amostra reservada.
 
 ## Resultados no teste
 
 | Modelo | Acurácia | Precisão ponderada | Recall ponderado | F1 ponderado | Ajuste (s) | Inferência (s) |
 |---|---:|---:|---:|---:|---:|---:|
-| CNN | 98.3571% | 0.983612 | 0.983571 | 0.983553 | 19.638 | 0.328 |
-| MLP | 97.6571% | 0.976573 | 0.976571 | 0.976551 | 6.441 | 0.093 |
-| KNN | 97.0286% | 0.970562 | 0.970286 | 0.970257 | 0.006 | 2.700 |
-| Random Forest | 96.5714% | 0.965740 | 0.965714 | 0.965695 | 4.365 | 0.133 |
+| CNN | 98.9929% | 0.989949 | 0.989929 | 0.989933 | 50.003 | 0.295 |
+| MLP | 97.6571% | 0.976573 | 0.976571 | 0.976551 | 7.465 | 0.090 |
+| KNN | 97.0286% | 0.970562 | 0.970286 | 0.970257 | 0.005 | 2.216 |
+| Random Forest | 96.5714% | 0.965740 | 0.965714 | 0.965695 | 3.735 | 0.087 |
 
-A CNN acertou 13.770 imagens, 98 a mais que a MLP. A maior confusão da CNN foi **9 → 4**, com 16 exemplos. O dígito 9 apresentou o menor F1 em todos os modelos.
+A CNN acertou 13.859 imagens, 187 a mais que a MLP. A maior confusão da CNN foi **4 → 9**, com 11 exemplos. O dígito 9 apresentou o menor F1 no KNN, na Random Forest e na MLP; na CNN o menor F1 ficou com o dígito 4 (0,9861), seguido de perto pelo 9 (0,9864).
 
-O tempo de ajuste corresponde somente à configuração selecionada, e o de inferência ao lote de 14.000 imagens. São medidas de uma execução local, sem benchmark repetido; equipamento, paralelismo e custos das chamadas afetam os valores. A CNN apresentou maior tempo de ajuste e MLP apresentou menor tempo de inferência nesta execução.
+O tempo de ajuste corresponde somente à configuração selecionada, e o de inferência ao lote de 14.000 imagens. São medidas de uma execução local, sem benchmark repetido; equipamento, paralelismo e custos das chamadas afetam os valores. A CNN apresentou maior tempo de ajuste. A Random Forest teve a menor duração de inferência nesta execução (0,0874 s), muito próxima da MLP (0,0897 s); a diferença isolada não estabelece vantagem consistente.
 
-A diferença de F1 CNN − MLP foi **0,007002**, com intervalo percentil de 95% **[0,004786; 0,009285]**, obtido por 1.000 reamostragens pareadas. O intervalo é condicionado aos modelos ajustados e à hipótese de exemplos independentes; não inclui a variabilidade de novos treinamentos ou seleções.
+A diferença de F1 CNN − MLP foi **0,013382**, com intervalo percentil de 95% **[0,011304; 0,015602]**, obtido por 1.000 reamostragens pareadas. O intervalo é condicionado aos modelos ajustados e à hipótese de exemplos independentes; não inclui a variabilidade de novos treinamentos ou seleções.
 
 ![Matrizes de confusão dos quatro modelos](reports/figures/matrizes_confusao_teste.png)
 
 ### Calibração das probabilidades
 
-A temperatura foi ajustada nas 7.000 imagens de calibração: **T = 1,009045**. A transformação preservou as classes previstas. No teste, a log loss passou de 0,05217654 para 0,05218850, e o ECE de dez intervalos passou de 0,00185767 para 0,00206713. Ambas as medidas pioraram discretamente. A pequena melhora no conjunto usado para ajustar a temperatura não se reproduziu no teste; não houve benefício observado nessas medidas.
+A temperatura foi ajustada nas 7.000 imagens de calibração: **T = 1,512363**. A transformação preservou as classes previstas. No teste, a log loss passou de 0,03756771 para 0,03271348, e o ECE de dez intervalos passou de 0,00489486 para 0,00099256. Ambas as medidas melhoraram: a log loss caiu cerca de 12,9% e o ECE ficou aproximadamente cinco vezes menor. Uma temperatura acima de 1 aproxima as probabilidades entre si, o que indica que a CNN atribuía às classes escolhidas probabilidades mais altas do que a frequência de acerto justificaria. A melhora obtida no conjunto usado para ajustar a temperatura se reproduziu no teste, em dados que não participaram desse ajuste.
 
 ### Classes ausentes do treino — desafios A e B
 
@@ -80,9 +82,9 @@ O processamento converte para cinza, estima o fundo, destaca o traço escuro com
 |---|---|---:|
 | IMG_7057.heic | Desenvolvimento do processamento | 9/10 |
 | IMG_7058.heic | Avaliação reservada | 10/10 |
-| IMG_7059.heic | Avaliação reservada | 9/10 |
+| IMG_7059.heic | Avaliação reservada | 10/10 |
 
-As vinte imagens reservadas foram avaliadas com o processamento fixado, sem novos ajustes nos pesos ou na temperatura: **19/20 acertos (95%)**. O único erro foi um **9 previsto como 3, com confiança de 98,53%**. Os dez exemplos de desenvolvimento são apresentados separadamente.
+As vinte imagens reservadas foram avaliadas com o processamento fixado, sem novos ajustes nos pesos ou na temperatura: **20/20 acertos (100%)**. O acerto integral não deve ser lido como ausência de erro: são vinte exemplos de uma pessoa e duas fotografias, e a confiança variou bastante entre eles — o dígito 9 da segunda foto foi reconhecido com **69,43%** e o dígito 2 com 74,27%. Os dez exemplos de desenvolvimento são apresentados separadamente, com 9/10 acertos; o erro remanescente é um **1 previsto como 2, com confiança de 75,36%**.
 
 A calibração feita no MNIST não garante probabilidades adequadas às fotografias próprias. A luminosidade pode alterar contraste e representação dos traços, mas o experimento não isolou esse fator; não é possível atribuir o erro observado à iluminação.
 
@@ -131,7 +133,7 @@ Para executar a demonstração web com desenho interativo em canvas, envio de fo
 python -m mnist_demo.servidor
 ```
 
-Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook. A tela de desenho inclui opções de espessura de traço (18px, 24px e 30px), com padrão em 24px para manter a densidade do traço proporcional ao MNIST original ao ser reduzido para 28 × 28.
+Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook. A tela de desenho inclui opções de espessura de traço (18px, 24px e 30px), com padrão em 24px. A espessura facilita experimentar desenhos, mas não garante equivalência com a escrita do MNIST.
 
 ### Testes automatizados e CI
 
@@ -141,7 +143,7 @@ Para rodar a suíte de testes unitários localmente:
 python -m unittest discover -s tests -v
 ```
 
-O repositório conta com integração contínua (CI) configurada no GitHub Actions (`.github/workflows/ci.yml`), que valida a integridade sintática dos scripts, a estrutura do notebook e executa a suíte de testes a cada push e pull request.
+O GitHub Actions verifica a sintaxe Python, valida o formato do notebook e executa os testes em pushes e pull requests. Os testes de consistência comparam afirmações selecionadas do README, notebook e guia com os CSVs; não substituem revisão de todos os textos. O CI não retreina os modelos e pula a inferência completa quando `artifacts/` está ausente. A inferência com a CNN deve ser verificada também no ambiente local com os artefatos gerados.
 
 ## Organização
 
@@ -154,7 +156,7 @@ requirements.txt             # Dependências com versões
 .github/workflows/           # Fluxos de automação e CI do GitHub Actions
 mnist_demo/                  # Módulos de pré-processamento, inferência desacoplada e servidor
 mnist_demo/web/              # Interface web (HTML5 Canvas, CSS e JavaScript puros)
-tests/                       # Suíte de testes automatizados (pipeline, manifesto, servidor)
+tests/                       # Testes do pipeline, manifesto, servidor e consistência dos números
 data/imagens_proprias/       # Fotos PNG, manifesto e parâmetros
 reports/figures/              # Matrizes, curvas, diagramas e galerias
 reports/tables/               # Resultados em CSV
@@ -187,12 +189,16 @@ As etapas foram registradas em commits próprios, com branches preservadas. As p
 | `feature/demonstracao` | Interface web interativa e inferência desacoplada da CNN |
 | `feature/ci` | Testes automatizados e integração contínua no GitHub Actions |
 | `feature/ajuste-traco` | Ajuste na espessura do traço e controle interativo de pincel |
+| `feature/ajuste-ci` | Testes de inferência condicionados aos artefatos e CI sem TensorFlow |
+| `feature/falsa-certeza` | Conceito de falsa certeza nomeado na análise das classes ocultadas |
+| `feature/readme-demo` | Pré-requisito da demonstração e alinhamento do termo no README |
+| `feature/cnn-convergencia` | Parada antecipada por acurácia de validação e reexecução completa |
 
 ## Limitações e melhorias possíveis
 
 Os resultados usam uma divisão e uma semente; a busca de hiperparâmetros é pequena. As fotos próprias representam uma pessoa e poucas condições de captura. A confiança não funciona como garantia de acerto nem como detector de classes desconhecidas.
 
-Na demonstração interativa por desenho no canvas, nota-se uma mudança de domínio (*domain shift*) em relação ao papel físico: o mouse e trackpad produzem traçados com menor fricção, cantos mais agudos e micro-descontinuidades. Esse efeito é especialmente visível no **dígito 8**, cuja morfologia compartilha arcos com o 2 e o 3; se as voltas do 8 não forem perfeitamente fechadas ou se o traço for demasiadamente fino, os filtros convolucionais tendem a ativar os detectores de 2 ou 3 com menor confiança. A disponibilização de espessuras maiores de traço (24px a 30px) atenua esse problema ao garantir densidade adequada na redução para 28 × 28.
+Desenhos com mouse ou trackpad podem diferir das fotografias e do MNIST em espessura, continuidade e formato dos traços. Foram observadas confusões no uso exploratório do canvas, incluindo desenhos do dígito 8. Não houve experimento controlado nem inspeção das ativações que identificasse sua causa. O seletor de pincel oferece outra forma de desenhar, mas seu ganho de acurácia não foi medido.
 
 Melhorias futuras incluem avaliar outras pessoas, controlar a iluminação ao fotografar os mesmos dígitos, experimentar aumento de dados (*data augmentation* com transformações elásticas e pequenas rotações) para aproximar o treino da caligrafia em telas digitais, adicionar operadores morfológicos de fechamento (*closing*) para conectar laços imperfeitos e avaliar mecanismos explícitos de rejeição para entradas desconhecidas. Novos ajustes exigiriam novos dados de desenvolvimento e uma nova amostra reservada.
 
