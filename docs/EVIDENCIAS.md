@@ -1,8 +1,8 @@
-# Conferência da entrega
+# Mapa de evidências do experimento
 
 ## Evidências técnicas
 
-| Requisito | Local no notebook | Evidência |
+| Análise | Local no notebook | Evidência |
 |---|---|---|
 | Fase 1 — EDA | Seção 2 | Dimensões, distribuição, grade 2 × 5 e representação dos pixels |
 | Fase 2 — preparação | Seção 3 | Divisão estratificada, ausência de sobreposição, normalização e justificativas |
@@ -18,21 +18,6 @@
 
 ## Git e GitHub
 
-As branches de cada etapa são preservadas. As primeiras integrações ocorreram localmente por fast-forward; o fechamento local usa commits de merge. O repositório público mantém as branches de cada etapa. A versão de entrega é integrada de `develop` para `main` por pull request. A versão consolidada deve estar em `main` antes da entrega.
+As branches de cada etapa são preservadas. As primeiras integrações ocorreram localmente por fast-forward; o fechamento local usa commits de merge. O repositório público mantém as branches de cada etapa. A versão consolidada é integrada de `develop` para `main` por pull request.
 
 Repositório público: [Luizhprovin/mnist-digit-classification](https://github.com/Luizhprovin/mnist-digit-classification).
-
-## Vídeo e submissão — pendentes
-
-A gravação e edição ficam com o estudante. O enunciado exige vídeo de até dez minutos, com rosto visível, cobrindo:
-
-- Objetivo e demonstração de funcionamento.
-- Preparação do ambiente e execução.
-- Organização das tarefas e planejamento.
-- Branches utilizadas e finalidade de cada uma.
-- Justificativa das escolhas técnicas e interpretação dos resultados.
-- Limitações e melhorias possíveis.
-
-O vídeo deverá ser disponibilizado no Google Drive como leitor para qualquer pessoa com o link. Antes de submeter, conferir o acesso público ao repositório, o acesso ao vídeo e o código consolidado em `main`.
-
-O prazo indicado no enunciado fornecido é **14/09/2026 às 22h**. A entrega exige os dois links no AVA. O enunciado orienta não alterar o projeto após a submissão até receber a nota. Vídeo e submissão não foram realizados por este repositório.
