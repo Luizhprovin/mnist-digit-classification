@@ -1,6 +1,6 @@
 # Classificação de dígitos manuscritos — MNIST
 
-Mini-projeto avaliativo do Módulo 02 de Desenvolvimento de IA para Análise Preditiva. O projeto compara algoritmos clássicos e redes neurais para reconhecer dígitos de 0 a 9, examina erros e confiança das previsões e aplica o modelo selecionado a fotografias de dígitos próprios.
+Este projeto compara algoritmos clássicos e redes neurais para reconhecer dígitos de 0 a 9, examina erros e confiança das previsões e aplica o modelo selecionado a fotografias de dígitos próprios.
 
 A implementação, as saídas executadas e as interpretações estão em [projeto.ipynb](projeto.ipynb). A CNN atingiu **98,9929% de acurácia nas 14.000 imagens de teste** e acertou **as 20 imagens próprias reservadas**. O resultado nas fotos é exploratório e não estima o desempenho para outras pessoas ou condições de captura.
 
@@ -133,7 +133,7 @@ Para executar a demonstração web com desenho interativo em canvas, envio de fo
 python -m mnist_demo.servidor
 ```
 
-Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook. A tela de desenho inclui opções de espessura de traço (18px, 24px e 30px), com padrão em 24px. A espessura facilita experimentar desenhos, mas não garante equivalência com a escrita do MNIST.
+Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook. Ao limpar, redesenhar, trocar de aba ou de fundo, a previsão anterior é invalidada. Respostas de consultas anteriores não podem sobrescrever a entrada atual. A tela de desenho inclui opções de espessura de traço (18px, 24px e 30px), com padrão em 24px. A espessura facilita experimentar desenhos, mas não garante equivalência com a escrita do MNIST.
 
 ### Testes automatizados e CI
 
@@ -143,7 +143,7 @@ Para rodar a suíte de testes unitários localmente:
 python -m unittest discover -s tests -v
 ```
 
-O GitHub Actions verifica a sintaxe Python, valida o formato do notebook e executa os testes em pushes e pull requests. Os testes de consistência comparam afirmações selecionadas do README, notebook e guia com os CSVs; não substituem revisão de todos os textos. O CI não retreina os modelos e pula a inferência completa quando `artifacts/` está ausente. A inferência com a CNN deve ser verificada também no ambiente local com os artefatos gerados.
+O GitHub Actions verifica a sintaxe Python, valida o formato do notebook e executa os testes em pushes e pull requests. Os testes de consistência comparam afirmações selecionadas do README, notebook e documentação com os CSVs; não substituem revisão de todos os textos. O CI não retreina os modelos e pula a inferência completa quando `artifacts/` está ausente. A inferência com a CNN deve ser verificada também no ambiente local com os artefatos gerados.
 
 ## Organização
 
@@ -160,7 +160,7 @@ tests/                       # Testes do pipeline, manifesto, servidor e consist
 data/imagens_proprias/       # Fotos PNG, manifesto e parâmetros
 reports/figures/              # Matrizes, curvas, diagramas e galerias
 reports/tables/               # Resultados em CSV
-docs/ENTREGA.md               # Correspondência com os requisitos e pendências externas
+docs/EVIDENCIAS.md            # Mapa das análises e evidências do experimento
 ```
 
 `data/cache/`, `.venv/` e `artifacts/` são ignorados pelo Git. MLP e CNN são salvas localmente em `artifacts/melhor_mlp.keras` e `artifacts/cnn.keras`; os modelos e demais arquivos desse diretório são recriados pelo notebook.
@@ -193,6 +193,7 @@ As etapas foram registradas em commits próprios, com branches preservadas. As p
 | `feature/falsa-certeza` | Conceito de falsa certeza nomeado na análise das classes ocultadas |
 | `feature/readme-demo` | Pré-requisito da demonstração e alinhamento do termo no README |
 | `feature/cnn-convergencia` | Parada antecipada por acurácia de validação e reexecução completa |
+| `feature/revisao-interface` | Invalidação do resultado ao trocar a entrada e descarte de respostas antigas |
 
 ## Limitações e melhorias possíveis
 

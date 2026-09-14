@@ -30,7 +30,60 @@ document.addEventListener("DOMContentLoaded", () => {
   let uploadBase64 = null;
   let desenhando = false;
   let canvasTemTraco = false;
-  let espessuraTraco = 24; // Padrão 24px (densidade compatível com MNIST)
+  let espessuraTraco = 24;
+  let versaoEntrada = 0;
+  let consultaAtiva = null;
+  let leitorAtivo = null;
+  let estadoModelo = "verificando";
+
+  function exibirEstadoModelo() {
+    const estados = {
+      verificando: ["Verificando modelo...", "badge-info"],
+      pronto: ["CNN Pronta", "badge-success"],
+      ausente: ["Modelo Ausente", "badge-error"],
+      offline: ["Servidor Offline", "badge-error"]
+    };
+    const [texto, classe] = estados[estadoModelo];
+    statusBadge.textContent = texto;
+    statusBadge.className = `badge ${classe}`;
+  }
+
+  function invalidarResultado() {
+    versaoEntrada += 1;
+    consultaAtiva?.controller.abort();
+    consultaAtiva = null;
+    detalhesBox.classList.add("hidden");
+    placeholderBox.classList.remove("hidden");
+    valorPredito.textContent = "-";
+    valorConfianca.textContent = "-%";
+    valorTemperatura.textContent = "";
+    barrasProbabilidades.replaceChildren();
+    [etapaOriginal, etapaCinza, etapaContraste, etapaTraco, etapaEntrada]
+      .forEach(img => img.removeAttribute("src"));
+    ocultarAlerta();
+    exibirEstadoModelo();
+  }
+
+  function iniciarConsulta() {
+    invalidarResultado();
+    const consulta = { versao: versaoEntrada, controller: new AbortController() };
+    consultaAtiva = consulta;
+    statusBadge.textContent = "Processando...";
+    statusBadge.className = "badge badge-info";
+    return consulta;
+  }
+
+  function consultaAtual(consulta) {
+    return consulta.versao === versaoEntrada && !consulta.controller.signal.aborted;
+  }
+
+  function falharConsulta(consulta, mensagem) {
+    if (!consultaAtual(consulta)) return;
+    consultaAtiva = null;
+    exibirAlerta(mensagem);
+    statusBadge.textContent = "Erro";
+    statusBadge.className = "badge badge-error";
+  }
 
   // 1. Inicialização do Canvas
   function resetarCanvas() {
@@ -56,6 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function iniciarTraco(e) {
+    e.preventDefault();
+    canvas.setPointerCapture(e.pointerId);
+    invalidarResultado();
     desenhando = true;
     canvasTemTraco = true;
     const { x, y } = obterPosicao(e);
@@ -86,8 +142,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
-    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-    const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+    const clientX = e.clientX ?? e.touches?.[0]?.clientX;
+    const clientY = e.clientY ?? e.touches?.[0]?.clientY;
     return {
       x: (clientX - rect.left) * scaleX,
       y: (clientY - rect.top) * scaleY
@@ -100,8 +156,9 @@ document.addEventListener("DOMContentLoaded", () => {
   canvas.addEventListener("pointercancel", finalizarTraco);
 
   btnLimpar.addEventListener("click", () => {
+    finalizarTraco();
     resetarCanvas();
-    ocultarAlerta();
+    invalidarResultado();
   });
 
   // 2. Abas de Navegação
@@ -114,24 +171,40 @@ document.addEventListener("DOMContentLoaded", () => {
       tabContents.forEach(c => c.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById(`tab-${btn.dataset.tab}`).classList.add("active");
-      ocultarAlerta();
+      invalidarResultado();
     });
   });
 
   // 3. Upload de Arquivos
   function carregarArquivo(file) {
     if (!file) return;
-    if (!file.type.match("image/(png|jpeg|webp)")) {
+    invalidarResultado();
+    leitorAtivo?.abort();
+    leitorAtivo = null;
+    uploadBase64 = null;
+    uploadPreview.removeAttribute("src");
+    uploadPreview.classList.add("hidden");
+    btnPredizerUpload.disabled = true;
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
       exibirAlerta("Formato inválido. Envie um arquivo PNG, JPEG ou WebP.");
       return;
     }
     const reader = new FileReader();
+    const versaoLeitura = versaoEntrada;
+    leitorAtivo = reader;
     reader.onload = (e) => {
+      if (leitorAtivo !== reader) return;
+      leitorAtivo = null;
       uploadBase64 = e.target.result;
       uploadPreview.src = uploadBase64;
       uploadPreview.classList.remove("hidden");
       btnPredizerUpload.disabled = false;
-      ocultarAlerta();
+    };
+    reader.onerror = () => {
+      if (leitorAtivo !== reader) return;
+      leitorAtivo = null;
+      if (versaoLeitura !== versaoEntrada) return;
+      exibirAlerta("Não foi possível ler a foto. Selecione outro arquivo.");
     };
     reader.readAsDataURL(file);
   }
@@ -159,18 +232,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  fundoSelect.addEventListener("change", invalidarResultado);
+
   // 4. Atalhos para Exemplos do Estudo
   document.querySelectorAll(".btn-exemplo").forEach(btn => {
     btn.addEventListener("click", async () => {
       const id = btn.dataset.id;
-      ocultarAlerta();
+      const consulta = iniciarConsulta();
       try {
-        const resp = await fetch(`/api/exemplo?id=${encodeURIComponent(id)}`);
+        const resp = await fetch(`/api/exemplo?id=${encodeURIComponent(id)}`, { signal: consulta.controller.signal });
         if (!resp.ok) throw new Error("Exemplo não localizado.");
         const dados = await resp.json();
-        executarPredicao(dados.imagem, "claro");
+        if (!consultaAtual(consulta)) return;
+        await executarPredicao(dados.imagem, "claro", consulta);
       } catch (err) {
-        exibirAlerta(`Falha ao carregar exemplo: ${err.message}`);
+        falharConsulta(consulta, `Falha ao carregar exemplo: ${err.message}`);
       }
     });
   });
@@ -178,6 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 5. Envio para Predição
   btnPredizerCanvas.addEventListener("click", () => {
     if (!canvasTemTraco) {
+      invalidarResultado();
       exibirAlerta("Desenhe um dígito no quadro antes de solicitar a classificação.");
       return;
     }
@@ -187,6 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   btnPredizerUpload.addEventListener("click", () => {
     if (!uploadBase64) {
+      invalidarResultado();
       exibirAlerta("Selecione ou arraste uma foto antes de prosseguir.");
       return;
     }
@@ -194,30 +272,28 @@ document.addEventListener("DOMContentLoaded", () => {
     executarPredicao(uploadBase64, fundo);
   });
 
-  async function executarPredicao(imagemBase64, fundo) {
-    ocultarAlerta();
-    statusBadge.textContent = "Processando...";
-    statusBadge.className = "badge badge-info";
+  async function executarPredicao(imagemBase64, fundo, consulta = iniciarConsulta()) {
 
     try {
       const resp = await fetch("/api/predizer", {
         method: "POST",
+        signal: consulta.controller.signal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ imagem: imagemBase64, fundo: fundo })
       });
 
       const res = await resp.json();
+      if (!consultaAtual(consulta)) return;
       if (!resp.ok) {
         throw new Error(res.erro || "Falha na inferência.");
       }
 
       exibirResultado(res);
-      statusBadge.textContent = "CNN Pronta";
-      statusBadge.className = "badge badge-success";
+      consultaAtiva = null;
+      estadoModelo = "pronto";
+      exibirEstadoModelo();
     } catch (err) {
-      exibirAlerta(err.message);
-      statusBadge.textContent = "Erro";
-      statusBadge.className = "badge badge-error";
+      falharConsulta(consulta, err.message);
     }
   }
 
@@ -268,21 +344,23 @@ document.addEventListener("DOMContentLoaded", () => {
     alertaBox.classList.add("hidden");
   }
 
-  // 7. Checagem inicial do modelo
+  // A checagem inicial não deve sobrescrever uma consulta iniciada pelo usuário.
   fetch("/api/estado")
-    .then(r => r.json())
+    .then(r => {
+      if (!r.ok) throw new Error("Falha ao consultar o servidor.");
+      return r.json();
+    })
     .then(dados => {
-      if (dados.modelo_disponivel) {
-        statusBadge.textContent = "CNN Pronta";
-        statusBadge.className = "badge badge-success";
-      } else {
-        statusBadge.textContent = "Modelo Ausente";
-        statusBadge.className = "badge badge-error";
+      estadoModelo = dados.modelo_disponivel ? "pronto" : "ausente";
+      if (versaoEntrada !== 0) return;
+      exibirEstadoModelo();
+      if (estadoModelo === "ausente") {
         exibirAlerta("CNN ou calibração não encontradas. Execute o notebook para gerar os artefatos.");
       }
     })
     .catch(() => {
-      statusBadge.textContent = "Servidor Offline";
-      statusBadge.className = "badge badge-error";
+      if (estadoModelo === "pronto") return;
+      estadoModelo = "offline";
+      if (versaoEntrada === 0) exibirEstadoModelo();
     });
 });
