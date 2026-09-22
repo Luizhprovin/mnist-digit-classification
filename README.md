@@ -4,7 +4,151 @@ Este projeto compara algoritmos clássicos e redes neurais para reconhecer dígi
 
 A implementação, as saídas executadas e as interpretações estão em [projeto.ipynb](projeto.ipynb). A CNN atingiu **98,9929% de acurácia nas 14.000 imagens de teste** e acertou **as 20 imagens próprias reservadas**. O resultado nas fotos é exploratório e não estima o desempenho para outras pessoas ou condições de captura.
 
-![Arquitetura da CNN utilizada](reports/figures/arquitetura_cnn.png)
+## Como abrir e executar localmente
+
+O notebook já contém os resultados e gráficos da execução registrada. Para ler a análise, abra `projeto.ipynb` no VS Code com a extensão Jupyter. Para executar código ou usar a demonstração, prepare o ambiente abaixo.
+
+### 1. Requisitos
+
+- **Python 3.12, 64 bits**, disponível em [python.org](https://www.python.org/downloads/).
+- Internet para instalar os pacotes e, se for executar o experimento completo pela primeira vez, baixar o MNIST do OpenML.
+- Windows x64, Linux x86-64 ou macOS com Apple Silicon compatível com as versões de `requirements.txt`. As bibliotecas atuais para Apple Silicon exigem macOS 14 ou superior.
+- Não é necessária uma placa de vídeo dedicada, CUDA ou conta em serviço de nuvem. O projeto pode executar na CPU.
+- Para visualizar e executar interativamente o notebook: [VS Code](https://code.visualstudio.com/) com as extensões **Python** e **Jupyter**, ambas da Microsoft. A execução pelo terminal dispensa o editor.
+
+Reserve espaço para o ambiente Python: as bibliotecas científicas ocupam mais de 1 GB. O tempo de instalação e de treinamento depende do computador. As versões principais do experimento estão fixadas em `requirements.txt`; as dependências indiretas são resolvidas pelo pip conforme a plataforma.
+
+### 2. Obter e extrair os arquivos
+
+**Pelo ZIP de entrega `mnist-digit-classification-entrega.zip`:** extraia o arquivo inteiro e abra a pasta `mnist-digit-classification`, onde ficam este README, `requirements.txt` e `projeto.ipynb`. Não execute arquivos de dentro do ZIP. Esse pacote inclui a CNN treinada e sua calibração em `artifacts/`, permitindo testar a demonstração sem retreinar.
+
+**Pelo GitHub:** use **Code → Download ZIP**, extraia a pasta, ou faça o clone:
+
+```bash
+git clone https://github.com/Luizhprovin/mnist-digit-classification.git
+cd mnist-digit-classification
+```
+
+O ZIP automático do GitHub e o clone contêm o código, fotos e resultados, mas **não incluem os modelos treinados**, pois `artifacts/` é ignorado pelo Git. Nesses casos, execute o notebook completo, conforme a seção 5, antes de iniciar a demonstração.
+
+Todos os comandos seguintes devem ser executados em um terminal aberto **na pasta que contém `requirements.txt` e `projeto.ipynb`**. No VS Code, use **Arquivo → Abrir Pasta** e depois **Terminal → Novo Terminal**.
+
+### 3. Criar o ambiente e instalar
+
+#### Windows — PowerShell
+
+```powershell
+py -3.12 --version
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade pip
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe -m ipykernel install --sys-prefix --name mnist --display-name "Python 3.12 (MNIST)"
+```
+
+A primeira linha deve mostrar `Python 3.12.x`. Os comandos usam o Python do ambiente diretamente; não é necessário ativar scripts nem alterar a política de execução do PowerShell.
+
+#### macOS ou Linux
+
+```bash
+python3.12 --version
+python3.12 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m pip check
+.venv/bin/python -m ipykernel install --sys-prefix --name mnist --display-name "Python 3.12 (MNIST)"
+```
+
+Se a instalação terminar corretamente, `pip check` deve responder `No broken requirements found.`. Crie o ambiente no próprio computador; não copie `.venv` de outra máquina. Git e Node.js não são necessários para abrir o pacote e executar o notebook ou a demonstração.
+
+### 4. Testar a demonstração com a CNN pronta
+
+Confirme que existem **os dois arquivos** `artifacts/cnn.keras` e `artifacts/calibracao_cnn.json`. Eles acompanham o ZIP de entrega preparado; no clone ou ZIP automático do GitHub, são gerados pelo notebook.
+
+No Windows:
+
+```powershell
+.\.venv\Scripts\python.exe -m mnist_demo.servidor
+```
+
+No macOS ou Linux:
+
+```bash
+.venv/bin/python -m mnist_demo.servidor
+```
+
+Abra **http://127.0.0.1:8765** no navegador. Mantenha o terminal aberto. A interface deve indicar **CNN Pronta**; na aba **Exemplos do Estudo**, escolha um exemplo para conferir a previsão e as probabilidades. O primeiro pedido pode demorar mais porque carrega o TensorFlow e o modelo.
+
+Também é possível desenhar um único dígito ou enviar um recorte em PNG, JPEG ou WebP. Escolha o fundo correspondente à imagem. Fotos HEIC e folhas inteiras com vários dígitos não são entradas aceitas diretamente: use um recorte de um dígito em formato compatível. A requisição tem limite de 8 MiB, incluindo a codificação base64, e a imagem deve ter no máximo 12 milhões de pixels.
+
+Encerre com **Ctrl+C** no terminal. Para usar outra porta, acrescente `--porta 8766` ao comando e abra `http://127.0.0.1:8766`. A demonstração funciona localmente e não precisa de internet depois da instalação quando os artefatos estão presentes. As imagens enviadas não são salvas.
+
+### 5. Executar o experimento completo
+
+No VS Code:
+
+1. Abra a pasta do projeto e o arquivo `projeto.ipynb`.
+2. Clique em **Selecionar Kernel** no canto superior direito.
+3. Selecione **Python 3.12 (MNIST)** ou o interpretador `.venv` criado na seção 3.
+4. Use **Reiniciar Kernel e Executar Tudo**. Aguarde as células terminarem na ordem.
+5. Confira as tabelas, os gráficos e a conclusão final. O diretório `artifacts/` passará a conter os modelos e os metadados gerados.
+
+Para executar sem VS Code, use o terminal. No Windows:
+
+```powershell
+.\.venv\Scripts\python.exe -m jupyter nbconvert --execute --to notebook --inplace projeto.ipynb --ExecutePreprocessor.kernel_name=mnist --ExecutePreprocessor.timeout=1800
+```
+
+No macOS ou Linux:
+
+```bash
+.venv/bin/python -m jupyter nbconvert --execute --to notebook --inplace projeto.ipynb --ExecutePreprocessor.kernel_name=mnist --ExecutePreprocessor.timeout=1800
+```
+
+O limite é de 1.800 segundos **por célula**, não uma previsão da duração total. Se uma máquina mais lenta exceder esse limite, aumente o valor. Na primeira execução, o MNIST é baixado para `data/cache/`; execuções seguintes reutilizam o cache. As três fotografias próprias já estão incluídas no pacote e não exigem os originais HEIC.
+
+**Reexecutar treina os modelos e sobrescreve as saídas do notebook, as tabelas, as figuras e os artefatos locais.** Para comparar com a execução entregue, mantenha uma cópia dos arquivos originais antes de reexecutar. Mesmo com sementes e versões fixadas, diferenças entre equipamentos e dependências podem alterar tempos e resultados numéricos. Os textos registram a execução entregue e precisam ser confrontados com os novos números se houver diferenças.
+
+### 6. Verificações opcionais
+
+No Windows:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
+No macOS ou Linux:
+
+```bash
+.venv/bin/python -m unittest discover -s tests -v
+```
+
+A suíte Python tem 19 testes. O teste de inferência completa é pulado quando os modelos estão ausentes; para executá-lo, use o ZIP com os artefatos ou gere-os pelo notebook. Os testes documentais comparam afirmações selecionadas com os CSVs da execução registrada; uma reexecução com resultados diferentes pode exigir atualização dos textos.
+
+Os nove testes de concorrência da interface são opcionais e exigem **Node.js 24**:
+
+```bash
+node --test tests/web/app.test.cjs
+```
+
+Node.js não participa da execução do modelo. No repositório, o GitHub Actions executa essas verificações, checa a sintaxe Python e valida o formato do notebook; o CI não retreina as redes.
+
+### 7. Solução de problemas
+
+| Sintoma | Como resolver |
+|---|---|
+| `py` ou `python3.12` não encontrado | Instale Python 3.12 e abra um novo terminal. No Windows, confira se o instalador incluiu o Python Launcher. |
+| `requirements.txt` não encontrado | Abra o terminal na pasta extraída que contém esse arquivo, não na pasta superior nem dentro do ZIP. |
+| `ModuleNotFoundError` | Repita a instalação com o executável de `.venv` e selecione esse mesmo ambiente como kernel. |
+| `No matching distribution found` | Confira Python 3.12, arquitetura de 64 bits e sistema compatível. macOS Intel e Windows ARM não foram validados para este conjunto de versões. |
+| Erro de DLL ao importar TensorFlow no Windows | Confira o [Microsoft Visual C++ Redistributable x64](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist), exigido pelo TensorFlow, e reinicie o terminal. |
+| Kernel `mnist` não encontrado | Execute novamente o comando `ipykernel install --sys-prefix` da seção 3 usando o Python de `.venv`. |
+| Erro no download do OpenML | Verifique acesso à internet, proxy ou bloqueio da rede. O cache do MNIST não acompanha a entrega. |
+| Interface mostra `Modelo Ausente` | Confira os dois arquivos em `artifacts/`; se usou o GitHub, execute o notebook completo primeiro. |
+| Endereço indisponível ou porta ocupada | Mantenha o servidor aberto no terminal ou use `--porta 8766` e o endereço correspondente. |
+| `Nenhum traço encontrado` | Envie um recorte legível de um dígito, com contraste, e confira a opção de fundo. |
+
+O treinamento original foi executado em macOS com Apple Silicon. As verificações de portabilidade e da cópia de entrega estão descritas na seção **Validação da entrega**; não se presume execução em Windows apenas pela existência dos comandos acima.
 
 ## Métodos e tecnologias
 
@@ -92,114 +236,54 @@ As galerias apresentam cada imagem ao lado das dez probabilidades: [desenvolvime
 
 A [inspeção do processamento em cinco etapas](reports/figures/etapas_processamento.png) mostra o caminho do recorte original até a entrada efetivamente utilizada pela CNN. A função compartilhada está em `mnist_demo/preprocessamento.py`.
 
-## Instalação
-
-Clone o repositório e entre na pasta:
-
-```bash
-git clone https://github.com/Luizhprovin/mnist-digit-classification.git
-cd mnist-digit-classification
-```
-
-Em macOS ou Linux, com Python 3.12 instalado:
-
-```bash
-python3.12 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-```
-
-Em Windows, use `py -3.12 -m venv .venv` e ative o ambiente com `.venv\Scripts\Activate.ps1` no PowerShell antes de instalar as dependências. O ambiente foi executado e verificado em macOS com Apple Silicon; não houve validação independente em Windows ou Linux.
-
-## Execução
-
-Abra [projeto.ipynb](projeto.ipynb) no VS Code com as extensões Python e Jupyter, selecione `.venv` como kernel e use **Reiniciar Kernel e Executar Tudo**. Execute as células na ordem. A configuração inicial dos logs nativos do TensorFlow deve ser aplicada antes da importação da biblioteca.
-
-Também é possível executar na raiz do projeto pelo terminal:
-
-```bash
-python -m jupyter nbconvert --execute --to notebook --inplace projeto.ipynb --ExecutePreprocessor.timeout=600
-```
-
-A primeira execução baixa o [MNIST do OpenML](https://www.openml.org/d/554) e requer internet. O cache fica em `data/cache/` e é reutilizado nas execuções seguintes. O notebook treina os modelos e atualiza as tabelas, figuras e saídas. O tempo total varia com o equipamento. As sementes e versões auxiliam a reprodução, mas pequenas diferenças numéricas podem ocorrer entre plataformas.
-
-### Demonstração interativa local
-
-**Pré-requisito:** a demonstração carrega `artifacts/cnn.keras` e `artifacts/calibracao_cnn.json`, gerados pelo notebook e não versionados (`artifacts/` está no `.gitignore`). Em um clone novo, execute [projeto.ipynb](projeto.ipynb) por completo antes de iniciar o servidor. Sem esses arquivos a interface abre, sinaliza o modelo como indisponível e recusa as predições com a mensagem correspondente.
-
-Para executar a demonstração web com desenho interativo em canvas, envio de fotografias e consulta às probabilidades calibradas da CNN:
-
-```bash
-python -m mnist_demo.servidor
-```
-
-Abra `http://127.0.0.1:8765` no navegador. A aplicação utiliza apenas a biblioteca padrão do Python (`http.server`) com HTML5/CSS/JavaScript puros no frontend, sem dependências adicionais de frameworks web. Ela desacopla a inferência do treinamento: carrega a CNN ajustada (`artifacts/cnn.keras`) e sua calibração por temperatura sem reexecutar o notebook. Ao limpar, redesenhar, trocar de aba ou de fundo, a previsão anterior é invalidada. Respostas de consultas anteriores não podem sobrescrever a entrada atual. A tela de desenho inclui opções de espessura de traço (18px, 24px e 30px), com padrão em 24px. A espessura facilita experimentar desenhos, mas não garante equivalência com a escrita do MNIST.
-
-### Testes automatizados e CI
-
-Para rodar a suíte de testes unitários localmente:
-
-```bash
-python -m unittest discover -s tests -v
-```
-
-Os testes de respostas assíncronas da interface usam o executor nativo do Node.js 24, sem pacotes adicionais:
-
-```bash
-node --test tests/web/*.test.cjs
-```
-
-Node.js é necessário apenas para esses testes, não para executar a demonstração. O GitHub Actions verifica a sintaxe Python, valida o formato do notebook e executa as suítes Python e JavaScript nos eventos configurados de push e pull request. Os testes de consistência comparam afirmações selecionadas do README, notebook e documentação com os CSVs; não substituem revisão de todos os textos. O CI não retreina os modelos e pula a inferência completa quando `artifacts/` está ausente. A inferência com a CNN deve ser verificada também no ambiente local com os artefatos gerados.
-
-## Organização
+## Organização dos arquivos
 
 ```text
-projeto.ipynb                 # Código, saídas e interpretação das fases
-README.md                    # Métodos, resultados e instruções
-requirements.txt             # Dependências com versões
+projeto.ipynb                 # Experimento executado, gráficos e conclusões
+README.md                    # Instalação, execução, protocolo e resultados
+requirements.txt             # Versões das dependências principais
 .python-version              # Python 3.12
-.vscode/                     # Seleção do ambiente no editor
-.github/workflows/           # Fluxos de automação e CI do GitHub Actions
-mnist_demo/                  # Módulos de pré-processamento, inferência desacoplada e servidor
-mnist_demo/web/              # Interface web (HTML5 Canvas, CSS e JavaScript puros)
-tests/                       # Testes do pipeline, manifesto, servidor e consistência dos números
-data/imagens_proprias/       # Fotos PNG, manifesto e parâmetros
-reports/figures/              # Matrizes, curvas, diagramas e galerias
-reports/tables/               # Resultados em CSV
-docs/EVIDENCIAS.md            # Mapa das análises e evidências do experimento
+mnist_demo/                  # Processamento, inferência e servidor local
+mnist_demo/web/              # HTML, CSS e JavaScript da demonstração
+data/imagens_proprias/       # Fotos PNG, rótulos, recortes e parâmetros
+reports/figures/             # Diagramas, matrizes, curvas e galerias
+reports/tables/              # Resultados numéricos em CSV
+tests/                      # Testes Python e JavaScript
+artifacts/                  # CNN e calibração no ZIP de entrega; gerado pelo notebook
 ```
 
-`data/cache/`, `.venv/` e `artifacts/` são ignorados pelo Git. MLP e CNN são salvas localmente em `artifacts/melhor_mlp.keras` e `artifacts/cnn.keras`; os modelos e demais arquivos desse diretório são recriados pelo notebook.
+O ZIP preparado para entrega exclui `.git/`, `.github/`, `.venv/`, caches, arquivos compilados, configurações locais do editor e material pessoal de estudo. Inclui apenas `cnn.keras` e `calibracao_cnn.json` de `artifacts/`, suficientes para a demonstração. Os outros modelos e metadados são recriados ao executar o notebook. No repositório Git, `.github/` mantém a automação e `artifacts/` continua ignorado.
+
+### Localização das análises no notebook
+
+| Seção | Conteúdo |
+|---|---|
+| 1 | Ambiente e versões |
+| 2 | Carregamento, integridade e análise exploratória |
+| 3 | Divisão, normalização e auditoria de duplicatas |
+| 4 | KNN, Random Forest, MLP, CNN e seleção na validação |
+| 5 | Calibração por temperatura |
+| 6 | Teste, matrizes de confusão, confiabilidade e bootstrap |
+| 7 | Classes ausentes do treinamento e falsa certeza |
+| 8 | Processamento, previsões e probabilidades das fotos próprias |
+| 9 | Conclusões, limites e propostas de melhoria |
+
+## Validação da entrega
+
+Auditoria realizada em **22/09/2026**, em uma cópia isolada, com um ambiente Python 3.12 novo no macOS com Apple Silicon:
+
+- Instalação de `requirements.txt` concluída e `pip check` sem conflitos.
+- Notebook inteiro reexecutado: **45 células de código, sem erros**, incluindo download do MNIST e geração dos modelos.
+- Métricas do teste, calibração, bootstrap e previsões das fotos conferidos com a execução entregue; não houve diferença acima de `1e-8` nessas tabelas, exceto nos tempos de execução.
+- **19 testes Python e 9 testes JavaScript aprovados** na cópia limpa.
+- Servidor HTTP, exemplos e predições verificados com a CNN incluída no pacote.
+- Notebook validado estruturalmente e prévia HTML conferida, com 15 imagens carregadas.
+
+A disponibilidade dos pacotes principais fixados foi consultada no PyPI para Python 3.12 em Windows x64 e Linux x64. Isso verifica a existência das distribuições, **não equivale a executar o projeto nesses sistemas**. A instalação e a execução completas foram testadas no macOS indicado acima. Os cálculos e as saídas originais do notebook entregue foram preservados; a reexecução de auditoria ocorreu em uma cópia temporária.
 
 ## Versionamento
 
-As etapas foram registradas em commits próprios, com branches preservadas. As primeiras integrações foram locais por avanço direto de `develop` (fast-forward); o fechamento local usa commits de merge. O repositório público mantém as branches de cada etapa. A versão de entrega é integrada de `develop` para `main` por pull request. O histórico não atribui pull requests às etapas integradas apenas localmente.
-
-| Branch | Objetivo |
-|---|---|
-| `feature/estrutura` | Ambiente e notebook inicial |
-| `feature/eda` | Carregamento e análise exploratória |
-| `feature/preprocessamento` | Divisão e normalização |
-| `feature/knn` | Ajuste e comparação do KNN |
-| `feature/random-forest` | Ajuste e comparação da Random Forest |
-| `feature/mlp` | MLP e auditoria de duplicatas |
-| `feature/cnn` | CNN e diagramas das redes |
-| `feature/calibracao` | Temperatura da CNN e correção de avisos |
-| `feature/avaliacao` | Teste, matrizes, confiabilidade e bootstrap |
-| `feature/classes-ocultadas` | Desafios A e B |
-| `feature/imagens-proprias` | Processamento e dez imagens de desenvolvimento |
-| `feature/avaliacao-proprias` | Vinte imagens reservadas e probabilidades dos trinta dígitos |
-| `feature/documentacao` | Revisão, conclusão geral e documentação de entrega |
-| `feature/publicacao` | Nome público e referências do repositório |
-| `feature/etapas-processamento` | Visualização das etapas e processamento compartilhado |
-| `feature/demonstracao` | Interface web interativa e inferência desacoplada da CNN |
-| `feature/ci` | Testes automatizados e integração contínua no GitHub Actions |
-| `feature/ajuste-traco` | Ajuste na espessura do traço e controle interativo de pincel |
-| `feature/ajuste-ci` | Testes de inferência condicionados aos artefatos e CI sem TensorFlow |
-| `feature/falsa-certeza` | Conceito de falsa certeza nomeado na análise das classes ocultadas |
-| `feature/readme-demo` | Pré-requisito da demonstração e alinhamento do termo no README |
-| `feature/cnn-convergencia` | Parada antecipada por acurácia de validação e reexecução completa |
-| `feature/revisao-interface` | Invalidação do resultado ao trocar a entrada e descarte de respostas antigas |
+O código consolidado está em `main`; `develop` reúne as alterações antes da integração por pull request. As branches das etapas e os commits são preservados no [histórico do repositório](https://github.com/Luizhprovin/mnist-digit-classification/commits/main). O ZIP de entrega contém os arquivos necessários à avaliação local e não inclui o diretório interno do Git.
 
 ## Limitações e melhorias possíveis
 
@@ -211,6 +295,7 @@ Melhorias futuras incluem avaliar outras pessoas, controlar a iluminação ao fo
 
 ## Referências
 
+- [Instalação do TensorFlow](https://www.tensorflow.org/install/pip) e [ambientes virtuais Python](https://docs.python.org/3.12/library/venv.html).
 - [MNIST no OpenML](https://www.openml.org/d/554).
 - [TensorFlow — Conv2D](https://www.tensorflow.org/api_docs/python/tf/keras/layers/Conv2D) e [EarlyStopping](https://www.tensorflow.org/api_docs/python/tf/keras/callbacks/EarlyStopping).
 - [VisualKeras](https://github.com/paulgavrikov/visualkeras).
