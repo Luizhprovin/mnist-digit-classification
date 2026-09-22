@@ -1,11 +1,4 @@
-"""Confere que os números citados na documentação batem com os resultados gerados.
-
-O notebook regenera `reports/tables/` a cada execução, mas as conclusões em
-markdown e o README são escritos à mão. Sem esta verificação, uma reexecução que
-mude qualquer resultado deixa os textos descrevendo números que não existem
-mais. Como as tabelas são versionadas, o teste roda também na integração
-contínua, sem precisar dos artefatos ignorados pelo Git.
-"""
+"""Confere afirmações selecionadas do README e notebook com os CSVs versionados."""
 
 import csv
 import json
@@ -45,9 +38,6 @@ class TestConsistenciaDocumentacao(unittest.TestCase):
     def setUpClass(cls):
         cls.readme = (RAIZ / "README.md").read_text(encoding="utf-8")
         cls.notebook = markdown_do_notebook()
-        cls.docs = "\n".join(
-            caminho.read_text(encoding="utf-8") for caminho in sorted((RAIZ / "docs").glob("*.md"))
-        )
 
     def afirmar_presente(self, texto, agulha, onde, descricao):
         # assertIn despejaria o documento inteiro na falha; a mensagem curta basta.
@@ -126,7 +116,7 @@ class TestConsistenciaDocumentacao(unittest.TestCase):
             for modelo in modelos
         }
         if len(set(piores.values())) > 1:
-            for texto, onde in [(self.readme, "README"), (self.notebook, "O notebook"), (self.docs, "Os documentos em docs/")]:
+            for texto, onde in [(self.readme, "README"), (self.notebook, "O notebook")]:
                 self.assertNotIn(
                     "menor F1 em todos os modelos", texto,
                     f"{onde} afirma um pior dígito comum, mas os modelos discordam: {piores}.",

@@ -37,7 +37,6 @@ body {
   width: 100%;
 }
 
-/* Header */
 .app-header {
   background: var(--bg-card);
   border-bottom: 1px solid var(--border-color);
@@ -76,7 +75,6 @@ body {
 .badge-success { background: #e8f5e9; color: var(--success); }
 .badge-error { background: #ffebee; color: var(--error); }
 
-/* Main Layout */
 .main-layout {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -114,7 +112,6 @@ body {
   margin-bottom: 0.75rem;
 }
 
-/* Tabs */
 .tabs {
   display: flex;
   gap: 0.5rem;
@@ -151,7 +148,6 @@ body {
   display: block;
 }
 
-/* Canvas */
 .canvas-container {
   display: flex;
   justify-content: center;
@@ -219,7 +215,6 @@ body {
   margin-top: 1rem;
 }
 
-/* Buttons */
 .btn {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
@@ -266,7 +261,6 @@ body {
   background: var(--primary-light);
 }
 
-/* Upload Dropzone */
 .upload-dropzone {
   border: 2px dashed var(--border-color);
   border-radius: var(--radius);
@@ -328,7 +322,6 @@ body {
   background: #ffffff;
 }
 
-/* Exemplos Grid */
 .exemplos-grid {
   display: flex;
   flex-direction: column;
@@ -347,7 +340,6 @@ body {
   margin-top: 0.2rem;
 }
 
-/* Resultados */
 .resultado-placeholder {
   display: flex;
   align-items: center;
@@ -419,7 +411,6 @@ body {
   font-size: 0.75rem;
 }
 
-/* Barras de Probabilidades */
 .probabilidades-section h3,
 .etapas-section h3 {
   font-size: 0.95rem;
@@ -477,7 +468,6 @@ body {
   font-weight: 500;
 }
 
-/* Etapas do Pré-processamento */
 .etapas-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -508,7 +498,6 @@ body {
   word-break: break-word;
 }
 
-/* Alertas */
 .alert {
   padding: 0.75rem 1rem;
   border-radius: var(--radius);
@@ -522,7 +511,6 @@ body {
   border: 1px solid #ffcdd2;
 }
 
-/* Footer */
 .app-footer {
   text-align: center;
   padding: 1.25rem 0;

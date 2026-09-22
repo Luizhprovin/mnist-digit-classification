@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // Elementos da interface
   const statusBadge = document.getElementById("status-badge");
   const alertaBox = document.getElementById("mensagem-alerta");
   const placeholderBox = document.getElementById("resultado-container");
@@ -85,7 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     statusBadge.className = "badge badge-error";
   }
 
-  // 1. Inicialização do Canvas
   function resetarCanvas() {
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -97,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   resetarCanvas();
 
-  // Configuração dos botões de espessura do pincel
   const btnBrushes = document.querySelectorAll(".btn-brush");
   btnBrushes.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -161,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
     invalidarResultado();
   });
 
-  // 2. Abas de Navegação
   const tabBtns = document.querySelectorAll(".tab-btn");
   const tabContents = document.querySelectorAll(".tab-content");
 
@@ -175,7 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 3. Upload de Arquivos
   function carregarArquivo(file) {
     if (!file) return;
     invalidarResultado();
@@ -234,7 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fundoSelect.addEventListener("change", invalidarResultado);
 
-  // 4. Atalhos para Exemplos do Estudo
   document.querySelectorAll(".btn-exemplo").forEach(btn => {
     btn.addEventListener("click", async () => {
       const id = btn.dataset.id;
@@ -251,7 +245,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 5. Envio para Predição
   btnPredizerCanvas.addEventListener("click", () => {
     if (!canvasTemTraco) {
       invalidarResultado();
@@ -297,7 +290,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 6. Renderização dos Resultados
   function exibirResultado(dados) {
     placeholderBox.classList.add("hidden");
     detalhesBox.classList.remove("hidden");
@@ -306,7 +298,6 @@ document.addEventListener("DOMContentLoaded", () => {
     valorConfianca.textContent = `${(dados.confianca * 100).toFixed(1)}%`;
     valorTemperatura.textContent = `Temperatura T = ${dados.temperatura.toFixed(3)}`;
 
-    // Renderizar as 10 barras de probabilidades
     barrasProbabilidades.innerHTML = "";
     dados.probabilidades.forEach((prob, digito) => {
       const porcentagem = (prob * 100).toFixed(1);
@@ -324,7 +315,6 @@ document.addEventListener("DOMContentLoaded", () => {
       barrasProbabilidades.appendChild(item);
     });
 
-    // Renderizar as 5 etapas visuais
     if (dados.etapas) {
       etapaOriginal.src = dados.etapas.original || "";
       etapaCinza.src = dados.etapas.cinza || "";

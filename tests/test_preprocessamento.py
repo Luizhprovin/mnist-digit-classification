@@ -14,13 +14,11 @@ class TestPreprocessamento(unittest.TestCase):
             etapas_digito(img)
 
     def test_rejeita_imagem_sem_traco(self):
-        # Imagem totalmente branca
         img = Image.new("RGB", (100, 100), color="white")
         with self.assertRaises(ValueError):
             etapas_digito(img)
 
     def test_processa_digito_sintetico_com_sucesso(self):
-        # Cria um quadrado escuro sobre fundo branco
         img = Image.new("RGB", (100, 100), color="white")
         draw = ImageDraw.Draw(img)
         draw.line([(30, 20), (30, 80), (70, 80)], fill="black", width=10)

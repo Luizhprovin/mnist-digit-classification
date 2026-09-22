@@ -15,7 +15,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from PIL import Image, UnidentifiedImageError
 
-from .inferencia import PreditorCNN, RAIZ, png_base64
+from .inferencia import PreditorCNN, RAIZ
 
 STATIC = Path(__file__).resolve().parent / "web"
 LIMITE_BYTES = 8 * 1024 * 1024
