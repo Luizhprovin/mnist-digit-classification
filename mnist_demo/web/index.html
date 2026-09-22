@@ -18,7 +18,6 @@
   </header>
 
   <main class="container main-layout">
-    <!-- Coluna de Entrada -->
     <section class="card input-card">
       <h2>Entrada de Imagem</h2>
 
@@ -27,8 +26,6 @@
         <button class="tab-btn" data-tab="upload">Enviar Foto</button>
         <button class="tab-btn" data-tab="exemplos">Exemplos do Estudo</button>
       </div>
-
-      <!-- Aba 1: Desenho no Canvas -->
       <div id="tab-desenho" class="tab-content active">
         <p class="help-text">Desenhe um dígito (0 a 9) com o mouse ou toque no centro do quadro:</p>
         <div class="canvas-container">
@@ -47,8 +44,6 @@
           <button id="btn-predizer-canvas" class="btn btn-primary">Classificar Dígito</button>
         </div>
       </div>
-
-      <!-- Aba 2: Upload de Imagem -->
       <div id="tab-upload" class="tab-content">
         <p class="help-text">Selecione uma fotografia ou recorte contendo um dígito:</p>
         <div class="upload-dropzone" id="dropzone">
@@ -70,8 +65,6 @@
           <button id="btn-predizer-upload" class="btn btn-primary" disabled>Classificar Foto</button>
         </div>
       </div>
-
-      <!-- Aba 3: Exemplos do Estudo -->
       <div id="tab-exemplos" class="tab-content">
         <p class="help-text">Carregue um dígito real utilizado no experimento:</p>
         <div class="exemplos-grid">
@@ -90,8 +83,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Coluna de Resultados -->
     <section class="card results-card">
       <h2>Resultado da Classificação</h2>
       
